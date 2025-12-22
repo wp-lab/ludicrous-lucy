@@ -603,6 +603,10 @@ footer {
     gap: var(--space-sm);
   }
 
+  main {
+    padding-top: 140px;
+  }
+
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
