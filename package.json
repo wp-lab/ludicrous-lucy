@@ -1,0 +1,15 @@
+{
+  "name": "ludicrous-lucy",
+  "version": "1.0.0",
+  "description": "Lucy - A Tesla Model X with a voice",
+  "scripts": {
+    "start": "npx serve -s . -l ${PORT:-3000}",
+    "dev": "npx serve -s . -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  },
+  "keywords": ["lucy", "tesla", "art", "giaf"],
+  "author": "Ludicrous Lucy",
+  "license": "MIT"
+}
