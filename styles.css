@@ -289,7 +289,7 @@ main {
 .page-header {
   padding: var(--space-xl) var(--space-md);
   text-align: center;
-  background: linear-gradient(180deg, var(--color-bg-alt), transparent);
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-alt) 20%, transparent 100%);
 }
 
 .page-header h1 {
