@@ -447,6 +447,33 @@ main {
   color: var(--color-text-muted);
 }
 
+/* Dream Gallery */
+.dream-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-md) auto;
+  max-width: 1200px;
+}
+
+.dream-gallery img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.dream-gallery img:hover {
+  transform: scale(1.02);
+  border-color: var(--color-accent);
+}
+
+.dream-caption {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-top: 0;
+}
+
 /* Vision Cards */
 .vision-cards {
   display: grid;
