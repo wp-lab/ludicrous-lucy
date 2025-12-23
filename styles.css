@@ -468,6 +468,11 @@ main {
   border-color: var(--color-accent);
 }
 
+.dream-gallery.single {
+  display: block;
+  max-width: 600px;
+}
+
 .dream-caption {
   text-align: center;
   font-size: 0.95rem;
