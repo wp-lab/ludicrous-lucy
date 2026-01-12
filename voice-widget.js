@@ -357,10 +357,14 @@
         throw new Error('ElevenLabs SDK failed to load. Please refresh the page.');
       }
 
+      // Get page language
+      const pageLang = document.documentElement.lang || 'en';
+
       // Start the conversation
       conversation = await window.ElevenLabsConversationalAI.startSession({
         agentId: CONFIG.agentId,
         dynamicVariables: context,
+        language: pageLang,
         onConnect: () => {
           console.log('Connected to Lucy');
           isConnected = true;
