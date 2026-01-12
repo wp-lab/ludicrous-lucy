@@ -211,10 +211,15 @@
         color: #10b981;
       }
 
-      /* Hide the default ElevenLabs widget button when we have our own */
+      /* Hide our button when ElevenLabs widget is active */
+      #lucy-voice-widget.widget-active .lucy-voice-btn {
+        display: none;
+      }
+
+      /* Position the ElevenLabs widget */
       elevenlabs-convai {
         --elevenlabs-convai-widget-position: fixed;
-        --elevenlabs-convai-widget-bottom: 100px;
+        --elevenlabs-convai-widget-bottom: 24px;
         --elevenlabs-convai-widget-right: 24px;
       }
     `;
@@ -374,14 +379,13 @@
       widgetElement.addEventListener('elevenlabs-convai:connected', () => {
         console.log('Connected to Lucy');
         isConnected = true;
-        btn.classList.add('active');
         modal.classList.remove('show');
       });
 
       widgetElement.addEventListener('elevenlabs-convai:disconnected', () => {
         console.log('Disconnected from Lucy');
         isConnected = false;
-        btn.classList.remove('active');
+        document.getElementById('lucy-voice-widget')?.classList.remove('widget-active');
         if (widgetElement) {
           widgetElement.remove();
           widgetElement = null;
@@ -391,9 +395,9 @@
       // Add to page
       document.body.appendChild(widgetElement);
 
-      // Mark as connected
+      // Mark as connected and hide our button
       isConnected = true;
-      btn.classList.add('active');
+      document.getElementById('lucy-voice-widget')?.classList.add('widget-active');
       modal.classList.remove('show');
 
       status.textContent = 'Connected! Speak now.';
@@ -413,7 +417,7 @@
       widgetElement = null;
     }
     isConnected = false;
-    document.getElementById('lucy-voice-btn')?.classList.remove('active');
+    document.getElementById('lucy-voice-widget')?.classList.remove('widget-active');
   }
 
   // Initialize when DOM is ready
