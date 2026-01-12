@@ -77,19 +77,19 @@
         height: 64px;
         border-radius: 50%;
         border: none;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
         color: white;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 20px rgba(100, 181, 246, 0.4);
         transition: all 0.3s ease;
       }
 
       .lucy-voice-btn:hover {
         transform: scale(1.1);
-        box-shadow: 0 6px 24px rgba(102, 126, 234, 0.5);
+        box-shadow: 0 6px 24px rgba(100, 181, 246, 0.5);
       }
 
       .lucy-voice-btn:disabled {
@@ -104,13 +104,13 @@
       }
 
       .lucy-voice-btn.active {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #64b5f6 0%, #2d5a8c 100%);
         animation: pulse 1.5s infinite;
       }
 
       @keyframes pulse {
-        0%, 100% { box-shadow: 0 4px 20px rgba(240, 147, 251, 0.4); }
-        50% { box-shadow: 0 4px 30px rgba(240, 147, 251, 0.6); }
+        0%, 100% { box-shadow: 0 4px 20px rgba(100, 181, 246, 0.4); }
+        50% { box-shadow: 0 4px 30px rgba(100, 181, 246, 0.6); }
       }
 
       .lucy-voice-modal {
@@ -160,7 +160,7 @@
 
       .lucy-voice-input:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #64b5f6;
       }
 
       .lucy-voice-input.error {
@@ -178,7 +178,7 @@
         width: 100%;
         margin-top: 12px;
         padding: 12px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
         color: white;
         border: none;
         border-radius: 8px;
@@ -346,9 +346,15 @@
 
       status.textContent = 'Connecting...';
 
-      // Check if ElevenLabs SDK is loaded
+      // Wait for ElevenLabs SDK to load (async script)
+      let attempts = 0;
+      while (!window.ElevenLabsConversationalAI && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+
       if (!window.ElevenLabsConversationalAI) {
-        throw new Error('ElevenLabs SDK not loaded. Please include the convai-widget script.');
+        throw new Error('ElevenLabs SDK failed to load. Please refresh the page.');
       }
 
       // Start the conversation
