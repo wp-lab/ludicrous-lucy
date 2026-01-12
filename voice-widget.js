@@ -369,12 +369,37 @@
       // Force language based on page
       widgetElement.setAttribute('override-language', pageLang);
 
-      // Customize widget text strings
-      widgetElement.setAttribute('action-text', 'Talk to Lucy');
-      widgetElement.setAttribute('start-call-text', 'Start conversation');
-      widgetElement.setAttribute('end-call-text', 'End conversation');
-      widgetElement.setAttribute('listening-text', 'Listening...');
-      widgetElement.setAttribute('speaking-text', 'Lucy is speaking...');
+      // Localized widget text strings
+      const strings = {
+        en: {
+          action: 'Talk to Lucy',
+          start: 'Start conversation',
+          end: 'End conversation',
+          listening: 'Listening...',
+          speaking: 'Lucy is speaking...'
+        },
+        de: {
+          action: 'Mit Lucy sprechen',
+          start: 'Gespräch starten',
+          end: 'Gespräch beenden',
+          listening: 'Ich höre zu...',
+          speaking: 'Lucy spricht...'
+        },
+        pt: {
+          action: 'Falar com a Lucy',
+          start: 'Iniciar conversa',
+          end: 'Terminar conversa',
+          listening: 'A ouvir...',
+          speaking: 'Lucy está a falar...'
+        }
+      };
+      const t = strings[pageLang] || strings.en;
+
+      widgetElement.setAttribute('action-text', t.action);
+      widgetElement.setAttribute('start-call-text', t.start);
+      widgetElement.setAttribute('end-call-text', t.end);
+      widgetElement.setAttribute('listening-text', t.listening);
+      widgetElement.setAttribute('speaking-text', t.speaking);
 
       // Add event listeners
       widgetElement.addEventListener('elevenlabs-convai:call', (event) => {
