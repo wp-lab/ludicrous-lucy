@@ -366,10 +366,15 @@
       widgetElement.setAttribute('agent-id', CONFIG.agentId);
       widgetElement.setAttribute('dynamic-variables', JSON.stringify(context));
 
-      // Set language override if not English
-      if (pageLang !== 'en') {
-        widgetElement.setAttribute('language', pageLang);
-      }
+      // Force language based on page
+      widgetElement.setAttribute('override-language', pageLang);
+
+      // Customize widget text strings
+      widgetElement.setAttribute('action-text', 'Talk to Lucy');
+      widgetElement.setAttribute('start-call-text', 'Start conversation');
+      widgetElement.setAttribute('end-call-text', 'End conversation');
+      widgetElement.setAttribute('listening-text', 'Listening...');
+      widgetElement.setAttribute('speaking-text', 'Lucy is speaking...');
 
       // Add event listeners
       widgetElement.addEventListener('elevenlabs-convai:call', (event) => {
