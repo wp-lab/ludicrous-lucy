@@ -4,10 +4,10 @@
  * Custom voice widget for ludicrous-lucy.me that:
  * 1. Gates access with a simple code
  * 2. Fetches pre-call context from lucy-bridge
- * 3. Starts ElevenLabs conversation with dynamic variables
+ * 3. Creates ElevenLabs widget with dynamic variables
  *
  * Usage:
- *   <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+ *   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
  *   <script src="voice-widget.js" defer></script>
  *
  * The widget auto-injects its UI when loaded.
@@ -27,9 +27,9 @@
   };
 
   // State
-  let conversation = null;
   let isConnected = false;
   let hasAccess = false;
+  let widgetElement = null;
 
   // Check for stored access
   function checkStoredAccess() {
@@ -210,6 +210,13 @@
       .lucy-voice-status.success {
         color: #10b981;
       }
+
+      /* Hide the default ElevenLabs widget button when we have our own */
+      elevenlabs-convai {
+        --elevenlabs-convai-widget-position: fixed;
+        --elevenlabs-convai-widget-bottom: 100px;
+        --elevenlabs-convai-widget-right: 24px;
+      }
     `;
     document.head.appendChild(style);
 
@@ -247,9 +254,9 @@
 
     // Button click handler
     btn.addEventListener('click', async () => {
-      if (isConnected) {
-        // End conversation
-        await endConversation();
+      if (isConnected && widgetElement) {
+        // End conversation - remove widget
+        endConversation();
         return;
       }
 
@@ -335,7 +342,7 @@
     }
   }
 
-  // Start ElevenLabs conversation
+  // Start ElevenLabs conversation by creating the widget element
   async function startConversation(status, btn, modal) {
     status.textContent = 'Fetching context...';
     status.className = 'lucy-voice-status';
@@ -346,49 +353,48 @@
 
       status.textContent = 'Connecting...';
 
-      // Wait for ElevenLabs SDK to load (async script)
-      let attempts = 0;
-      while (!window.ElevenLabsConversationalAI && attempts < 50) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        attempts++;
-      }
-
-      if (!window.ElevenLabsConversationalAI) {
-        throw new Error('ElevenLabs SDK failed to load. Please refresh the page.');
-      }
-
       // Get page language
       const pageLang = document.documentElement.lang || 'en';
 
-      // Start the conversation
-      conversation = await window.ElevenLabsConversationalAI.startSession({
-        agentId: CONFIG.agentId,
-        dynamicVariables: context,
-        language: pageLang,
-        onConnect: () => {
-          console.log('Connected to Lucy');
-          isConnected = true;
-          btn.classList.add('active');
-          modal.classList.remove('show');
-        },
-        onDisconnect: () => {
-          console.log('Disconnected from Lucy');
-          isConnected = false;
-          btn.classList.remove('active');
-          conversation = null;
-        },
-        onError: (error) => {
-          console.error('Conversation error:', error);
-          status.textContent = 'Connection error. Please try again.';
-          status.className = 'lucy-voice-status error';
-          isConnected = false;
-          btn.classList.remove('active');
-        },
-        onModeChange: (mode) => {
-          // mode can be 'speaking', 'listening', 'idle'
-          console.log('Mode:', mode);
+      // Create the ElevenLabs widget element dynamically
+      widgetElement = document.createElement('elevenlabs-convai');
+      widgetElement.setAttribute('agent-id', CONFIG.agentId);
+      widgetElement.setAttribute('dynamic-variables', JSON.stringify(context));
+
+      // Set language override if not English
+      if (pageLang !== 'en') {
+        widgetElement.setAttribute('language', pageLang);
+      }
+
+      // Add event listeners
+      widgetElement.addEventListener('elevenlabs-convai:call', (event) => {
+        console.log('Call event:', event);
+      });
+
+      widgetElement.addEventListener('elevenlabs-convai:connected', () => {
+        console.log('Connected to Lucy');
+        isConnected = true;
+        btn.classList.add('active');
+        modal.classList.remove('show');
+      });
+
+      widgetElement.addEventListener('elevenlabs-convai:disconnected', () => {
+        console.log('Disconnected from Lucy');
+        isConnected = false;
+        btn.classList.remove('active');
+        if (widgetElement) {
+          widgetElement.remove();
+          widgetElement = null;
         }
       });
+
+      // Add to page
+      document.body.appendChild(widgetElement);
+
+      // Mark as connected
+      isConnected = true;
+      btn.classList.add('active');
+      modal.classList.remove('show');
 
       status.textContent = 'Connected! Speak now.';
       status.className = 'lucy-voice-status success';
@@ -401,14 +407,10 @@
   }
 
   // End conversation
-  async function endConversation() {
-    if (conversation) {
-      try {
-        await conversation.endSession();
-      } catch (e) {
-        console.error('Error ending session:', e);
-      }
-      conversation = null;
+  function endConversation() {
+    if (widgetElement) {
+      widgetElement.remove();
+      widgetElement = null;
     }
     isConnected = false;
     document.getElementById('lucy-voice-btn')?.classList.remove('active');
