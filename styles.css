@@ -776,3 +776,236 @@ footer {
     padding-top: 200px;
   }
 }
+
+/* ============================================
+   PRICING PAGE STYLES
+   ============================================ */
+
+.hero-small {
+  min-height: 30vh;
+  padding: var(--space-lg) var(--space-md);
+}
+
+.hero-small .hero-content {
+  text-align: center;
+}
+
+/* Pricing Grid */
+.pricing-section {
+  padding: var(--space-lg) var(--space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+}
+
+/* Price Cards */
+.price-card {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-md);
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.price-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px rgba(100, 181, 246, 0.1);
+}
+
+.price-card.featured {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-bg-alt) 0%, rgba(30, 58, 95, 0.3) 100%);
+}
+
+.price-card.price-card-special {
+  background: linear-gradient(135deg, rgba(100, 181, 246, 0.1) 0%, var(--color-bg-alt) 100%);
+  border-style: dashed;
+}
+
+.price-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-header {
+  margin-bottom: var(--space-sm);
+}
+
+.price-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text);
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.price-description {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: var(--space-sm);
+  line-height: 1.5;
+}
+
+.price-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.price-features li {
+  padding: var(--space-xs) 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.price-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+/* Extras Section */
+.extras-section {
+  padding: var(--space-lg) var(--space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--color-border);
+}
+
+.extras-section h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: var(--space-md);
+  color: var(--color-text);
+}
+
+.extras-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-md);
+}
+
+.extra-item {
+  padding: var(--space-sm);
+}
+
+.extra-item h4 {
+  color: var(--color-accent);
+  font-size: 1rem;
+  margin-bottom: var(--space-xs);
+  font-weight: 600;
+}
+
+.extra-item p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(30, 58, 95, 0.2) 100%);
+}
+
+.cta-section h2 {
+  font-size: 2rem;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text);
+}
+
+.cta-section > p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.cta-buttons {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all var(--transition-normal);
+}
+
+.cta-whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.cta-whatsapp:hover {
+  background: #128C7E;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+}
+
+.cta-secondary {
+  background: transparent;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+}
+
+.cta-secondary:hover {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  transform: translateY(-2px);
+}
+
+.cta-icon {
+  font-size: 1.2rem;
+}
+
+/* Pricing Responsive */
+@media (max-width: 768px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-button {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+}
