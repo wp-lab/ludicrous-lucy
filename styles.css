@@ -988,6 +988,25 @@ footer {
   transform: translateY(-2px);
 }
 
+.cta-telegram {
+  background: #0088cc;
+  color: white;
+}
+
+.cta-telegram:hover {
+  background: #006699;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+}
+
+.privacy-note {
+  margin-top: var(--space-md);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
 .cta-icon {
   font-size: 1.2rem;
 }
