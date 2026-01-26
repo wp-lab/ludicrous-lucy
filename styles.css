@@ -945,6 +945,81 @@ footer {
   margin-bottom: var(--space-md);
 }
 
+/* Contact Icon Buttons - Small Round Style */
+.contact-icons {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.contact-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+}
+
+.contact-icon-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+.contact-icon-btn.whatsapp {
+  background: rgba(37, 211, 102, 0.15);
+  border-color: rgba(37, 211, 102, 0.3);
+}
+
+.contact-icon-btn.whatsapp svg {
+  fill: #25D366;
+}
+
+.contact-icon-btn.whatsapp:hover {
+  background: rgba(37, 211, 102, 0.25);
+  border-color: #25D366;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.2);
+}
+
+.contact-icon-btn.telegram {
+  background: rgba(0, 136, 204, 0.15);
+  border-color: rgba(0, 136, 204, 0.3);
+}
+
+.contact-icon-btn.telegram svg {
+  fill: #0088cc;
+}
+
+.contact-icon-btn.telegram:hover {
+  background: rgba(0, 136, 204, 0.25);
+  border-color: #0088cc;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 136, 204, 0.2);
+}
+
+.contact-icon-btn.signal {
+  background: rgba(59, 118, 240, 0.15);
+  border-color: rgba(59, 118, 240, 0.3);
+}
+
+.contact-icon-btn.signal svg {
+  fill: #3B76F0;
+}
+
+.contact-icon-btn.signal:hover {
+  background: rgba(59, 118, 240, 0.25);
+  border-color: #3B76F0;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(59, 118, 240, 0.2);
+}
+
+/* Legacy CTA buttons (for Talk to Lucy link) */
 .cta-buttons {
   display: flex;
   gap: var(--space-sm);
@@ -956,24 +1031,12 @@ footer {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
-  font-size: 1rem;
+  padding: 12px 24px;
+  font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
   border-radius: 8px;
   transition: all var(--transition-normal);
-}
-
-.cta-whatsapp {
-  background: #25D366;
-  color: white;
-}
-
-.cta-whatsapp:hover {
-  background: #128C7E;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
 }
 
 .cta-secondary {
@@ -988,18 +1051,6 @@ footer {
   transform: translateY(-2px);
 }
 
-.cta-telegram {
-  background: #0088cc;
-  color: white;
-}
-
-.cta-telegram:hover {
-  background: #006699;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
-}
-
 .privacy-note {
   margin-top: var(--space-md);
   font-size: 0.85rem;
@@ -1008,7 +1059,22 @@ footer {
 }
 
 .cta-icon {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+}
+
+/* Details Section (Good to Know) */
+.details-section {
+  padding: var(--space-lg) var(--space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--color-border);
+}
+
+.details-section h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: var(--space-md);
+  color: var(--color-text);
 }
 
 /* Pricing Responsive */
