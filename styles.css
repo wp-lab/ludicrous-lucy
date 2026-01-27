@@ -951,7 +951,7 @@ footer {
   gap: var(--space-md);
   justify-content: center;
   align-items: center;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-lg);
 }
 
 .contact-icon-btn {
