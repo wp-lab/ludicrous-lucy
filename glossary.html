@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dragon Moon Temple — Sacred Number Glossary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Orbitron:wght@400;500;600&family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050505;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201, 168, 76, 0.15);
+      --gold-glow: rgba(201, 168, 76, 0.06);
+      --purple: #A855F7;
+      --ember: #e8611a;
+      --text: #F5F0FF;
+      --text-dim: rgba(245, 240, 255, 0.35);
+      --text-muted: rgba(245, 240, 255, 0.15);
+      --font-display: 'Orbitron', sans-serif;
+      --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--text);
+    }
+    body {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    /* -- Background --------------------------------- */
+    .background {
+      position: fixed; inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 50% 30%, #0a0508 0%, var(--bg) 70%);
+    }
+    .scanlines {
+      position: fixed; inset: 0;
+      z-index: 99;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0px, transparent 4px,
+        rgba(255,255,255,0.006) 4px, rgba(255,255,255,0.006) 6px
+      );
+    }
+
+    /* -- Particles ---------------------------------- */
+    .particle {
+      position: fixed;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      z-index: 1;
+      animation: drift 25s infinite ease-in-out;
+    }
+    @keyframes drift {
+      0% { opacity: 0; transform: translateY(0) translateX(0); }
+      15% { opacity: 0.15; }
+      50% { opacity: 0.25; transform: translateY(-120px) translateX(15px); }
+      85% { opacity: 0.08; }
+      100% { opacity: 0; transform: translateY(-240px) translateX(-10px); }
+    }
+
+    /* -- Content container --------------------------- */
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: min(780px, 90vw);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* -- Hero section ------------------------------- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 2rem;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      animation: fadeIn 3s ease-out 0.5s forwards;
+    }
+    .hero-subtitle {
+      font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-dim);
+      max-width: 560px;
+      opacity: 0;
+      animation: fadeIn 3s ease-out 1.5s forwards;
+    }
+    .hero-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      animation: fadeIn 3s ease-out 2s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* -- Table of Contents -------------------------- */
+    .toc {
+      opacity: 0;
+      animation: fadeIn 3s ease-out 2.5s forwards;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .toc-group-label {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.4;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      text-align: left;
+    }
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem 0.8rem;
+      justify-content: center;
+    }
+    .toc-list a {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 0.2rem 0;
+      border-bottom: 1px solid transparent;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+    }
+    .toc-list a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold-dim);
+    }
+
+    /* -- Side navigation (scrollspy) ---------------- */
+    .side-nav {
+      position: fixed;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      opacity: 0;
+      transition: opacity 1s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .side-nav::-webkit-scrollbar { width: 0; }
+    .side-nav.visible { opacity: 1; }
+    .side-nav a {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: lowercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.2rem 0;
+      border-left: 1px solid transparent;
+      padding-left: 0.6rem;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+    }
+    .side-nav a:hover { color: var(--text-dim); }
+    .side-nav a.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+    }
+    .side-nav .nav-group {
+      font-family: var(--font-display);
+      font-size: 0.45rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.3;
+      padding-left: 0.6rem;
+      margin-top: 0.5rem;
+      cursor: default;
+    }
+    @media (max-width: 1200px) {
+      .side-nav { display: none; }
+    }
+
+    /* -- Sections ----------------------------------- */
+    .gls-section {
+      padding: 5rem 0 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+    }
+    .gls-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section-number {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .section-line {
+      width: 40px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 0 auto 2rem;
+    }
+    .section-intro {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(245, 240, 255, 0.5);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* -- Body text ---------------------------------- */
+    .body-text {
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+      color: rgba(245, 240, 255, 0.65);
+      margin-bottom: 1.5rem;
+      text-align: left;
+      line-height: 1.9;
+    }
+    .body-text strong {
+      color: rgba(245, 240, 255, 0.85);
+      font-weight: 400;
+    }
+    .body-text em {
+      color: rgba(245, 240, 255, 0.75);
+    }
+    .body-text a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-dim);
+      transition: border-color 0.3s;
+    }
+    .body-text a:hover {
+      border-bottom-color: var(--gold);
+    }
+
+    /* -- Subheading --------------------------------- */
+    .sub-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      font-weight: 400;
+      color: rgba(245, 240, 255, 0.85);
+      margin: 2.5rem 0 1rem;
+      text-align: left;
+    }
+
+    /* -- Blockquotes -------------------------------- */
+    blockquote {
+      border-left: 2px solid var(--gold);
+      padding: 1.2rem 1.5rem;
+      margin: 2rem 0;
+      background: rgba(201, 168, 76, 0.02);
+      border-radius: 0 4px 4px 0;
+    }
+    blockquote p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      font-style: italic;
+      color: rgba(245, 240, 255, 0.7);
+      text-align: left;
+      margin-bottom: 0;
+      line-height: 1.8;
+    }
+    blockquote .attribution {
+      display: block;
+      margin-top: 0.8rem;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 0.75rem;
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    /* -- Algorithm / step-by-step boxes ------------- */
+    .algorithm-box {
+      border: 1px solid var(--gold-glow);
+      border-radius: 4px;
+      background: rgba(201, 168, 76, 0.015);
+      padding: 1.5rem 1.8rem;
+      margin: 1.5rem 0;
+    }
+    .algorithm-box .algo-title {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-bottom: 1rem;
+    }
+    .algorithm-box .algo-step {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: rgba(245, 240, 255, 0.65);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .algorithm-box .algo-step::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      color: var(--gold);
+      opacity: 0.5;
+      top: 0.25rem;
+    }
+    .algo-chain {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--gold);
+      opacity: 0.6;
+      margin: 0.8rem 0 0.3rem 1.5rem;
+      word-break: break-all;
+      line-height: 1.8;
+    }
+    .algo-result {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: rgba(245, 240, 255, 0.7);
+      margin: 0.8rem 0 0 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* -- Try-it box --------------------------------- */
+    .try-it {
+      border: 1px solid rgba(168, 85, 247, 0.15);
+      border-radius: 4px;
+      background: rgba(168, 85, 247, 0.02);
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .try-it .try-title {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      opacity: 0.6;
+      margin-bottom: 0.8rem;
+    }
+    .try-it p {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(245, 240, 255, 0.55);
+      line-height: 1.7;
+      text-align: left;
+      margin-bottom: 0.5rem;
+    }
+    .try-it p:last-child { margin-bottom: 0; }
+
+    /* -- Sacred connection callout ------------------- */
+    .sacred-connection {
+      border-left: 2px solid var(--ember);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      background: rgba(232, 97, 26, 0.02);
+      border-radius: 0 4px 4px 0;
+    }
+    .sacred-connection .sc-title {
+      font-family: var(--font-display);
+      font-size: 0.5rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ember);
+      opacity: 0.6;
+      margin-bottom: 0.5rem;
+    }
+    .sacred-connection p {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: rgba(245, 240, 255, 0.55);
+      text-align: left;
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    /* -- Formula display ---------------------------- */
+    .formula {
+      text-align: center;
+      padding: 1.5rem 0;
+      margin: 1rem 0;
+    }
+    .formula .math {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 200;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+    .formula .math-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 200;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      margin-top: 0.5rem;
+    }
+
+    /* -- Fact cards --------------------------------- */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 550px) {
+      .fact-grid { grid-template-columns: 1fr; }
+    }
+    .fact-card {
+      padding: 1.5rem;
+      border: 1px solid var(--gold-glow);
+      border-radius: 4px;
+      background: rgba(201, 168, 76, 0.02);
+      text-align: left;
+    }
+    .fact-card h3 {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .fact-card p {
+      font-size: 0.9rem;
+      text-align: left;
+      margin: 0;
+      color: rgba(245, 240, 255, 0.6);
+      line-height: 1.7;
+    }
+
+    /* -- Cycle visualization (for unhappy cycle) ---- */
+    .cycle-viz {
+      text-align: center;
+      margin: 2rem 0;
+      padding: 1.5rem;
+    }
+    .cycle-viz .cycle-numbers {
+      font-family: var(--font-body);
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      font-weight: 300;
+      color: var(--gold);
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+      line-height: 2;
+    }
+    .cycle-viz .cycle-numbers .highlight {
+      color: var(--ember);
+      font-weight: 400;
+    }
+    .cycle-viz .cycle-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 200;
+      color: var(--text-dim);
+      margin-top: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* -- Sieve table -------------------------------- */
+    .sieve-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+    }
+    .sieve-table th {
+      font-family: var(--font-display);
+      font-size: 0.5rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 0.7rem 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+    .sieve-table td {
+      padding: 0.5rem;
+      color: rgba(245, 240, 255, 0.6);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.04);
+      font-weight: 300;
+      vertical-align: top;
+    }
+    .sieve-table .eliminated {
+      color: rgba(245, 240, 255, 0.2);
+      text-decoration: line-through;
+    }
+    .sieve-table .survived {
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
+    /* -- List style --------------------------------- */
+    .styled-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      padding: 0;
+    }
+    .styled-list li {
+      position: relative;
+      padding-left: 1.2rem;
+      margin-bottom: 0.8rem;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      color: rgba(245, 240, 255, 0.6);
+      line-height: 1.7;
+      text-align: left;
+    }
+    .styled-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.7em;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.4;
+    }
+
+    /* -- Section divider ----------------------------- */
+    .section-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 4rem auto;
+    }
+
+    /* -- Fixed bottom nav --------------------------- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      z-index: 50;
+      text-align: center;
+      padding: 1rem 0;
+      background: linear-gradient(to top, var(--bg) 40%, transparent);
+      pointer-events: none;
+    }
+    .bottom-nav-inner {
+      pointer-events: auto;
+      display: inline-flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .bottom-nav a {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: lowercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.4s ease;
+      padding: 0.3rem 0;
+    }
+    .bottom-nav a:hover { color: var(--gold); }
+    .bottom-nav a.current {
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--gold-dim);
+    }
+    .bottom-nav .dot {
+      color: var(--text-muted);
+      font-size: 0.5rem;
+    }
+
+    /* -- Footer ------------------------------------- */
+    footer {
+      padding: 4rem 0 6rem;
+      text-align: center;
+    }
+    .footer-text {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+    .footer-text a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-glow);
+    }
+    .footer-text a:hover { color: var(--gold); }
+
+    /* -- Reduced motion ----------------------------- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .gls-section { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background"></div>
+  <div class="scanlines"></div>
+  <div id="particles"></div>
+
+  <!-- Side navigation (scrollspy) -->
+  <nav class="side-nav" id="sideNav">
+    <span class="nav-group">Core</span>
+    <a href="#happy" data-section="happy">Happy Numbers</a>
+    <a href="#lucky" data-section="lucky">Lucky Numbers</a>
+    <a href="#prime" data-section="prime">Prime Numbers</a>
+    <a href="#perfect" data-section="perfect">Perfect Numbers</a>
+    <a href="#abundant" data-section="abundant">Abundant Numbers</a>
+    <a href="#deficient" data-section="deficient">Deficient Numbers</a>
+    <span class="nav-group">Sequences</span>
+    <a href="#fibonacci" data-section="fibonacci">Fibonacci</a>
+    <a href="#catalan" data-section="catalan">Catalan</a>
+    <a href="#triangular" data-section="triangular">Triangular</a>
+    <a href="#star" data-section="star">Star Numbers</a>
+    <span class="nav-group">Digit</span>
+    <a href="#harshad" data-section="harshad">Harshad</a>
+    <a href="#narcissistic" data-section="narcissistic">Narcissistic</a>
+    <a href="#automorphic" data-section="automorphic">Automorphic</a>
+    <a href="#kaprekar" data-section="kaprekar">Kaprekar</a>
+    <a href="#digital-root" data-section="digital-root">Digital Root</a>
+    <a href="#palindrome" data-section="palindrome">Palindromes</a>
+    <span class="nav-group">Binary</span>
+    <a href="#evil" data-section="evil">Evil Numbers</a>
+    <a href="#odious" data-section="odious">Odious Numbers</a>
+    <a href="#binary-palindrome" data-section="binary-palindrome">Binary Palindromes</a>
+    <span class="nav-group">Special</span>
+    <a href="#semiprime" data-section="semiprime">Semiprimes</a>
+    <a href="#master" data-section="master">Master Numbers</a>
+    <a href="#sheldon" data-section="sheldon">Sheldon Conjecture</a>
+    <a href="#mihailescu" data-section="mihailescu">Mihailescu&rsquo;s Theorem</a>
+    <a href="#happy-year" data-section="happy-year">Happy Year Trilogy</a>
+  </nav>
+
+  <div class="content">
+
+    <!-- == HERO ===================================== -->
+    <div class="hero">
+      <h1 class="hero-title">The Glossary</h1>
+      <div class="hero-line"></div>
+      <p class="hero-subtitle">A comprehensive guide to the mathematical properties behind the sacred numbers. What they mean, where they come from, and how to find them.</p>
+
+      <div class="toc">
+        <div class="toc-group-label">Core Properties</div>
+        <div class="toc-list">
+          <a href="#happy">Happy</a>
+          <a href="#lucky">Lucky</a>
+          <a href="#prime">Prime</a>
+          <a href="#perfect">Perfect</a>
+          <a href="#abundant">Abundant</a>
+          <a href="#deficient">Deficient</a>
+        </div>
+        <div class="toc-group-label">Sequence Properties</div>
+        <div class="toc-list">
+          <a href="#fibonacci">Fibonacci</a>
+          <a href="#catalan">Catalan</a>
+          <a href="#triangular">Triangular</a>
+          <a href="#star">Star Numbers</a>
+        </div>
+        <div class="toc-group-label">Digit Properties</div>
+        <div class="toc-list">
+          <a href="#harshad">Harshad</a>
+          <a href="#narcissistic">Narcissistic</a>
+          <a href="#automorphic">Automorphic</a>
+          <a href="#kaprekar">Kaprekar</a>
+          <a href="#digital-root">Digital Root</a>
+          <a href="#palindrome">Palindromes</a>
+        </div>
+        <div class="toc-group-label">Binary Properties</div>
+        <div class="toc-list">
+          <a href="#evil">Evil</a>
+          <a href="#odious">Odious</a>
+          <a href="#binary-palindrome">Binary Palindromes</a>
+        </div>
+        <div class="toc-group-label">Compound &amp; Special</div>
+        <div class="toc-list">
+          <a href="#semiprime">Semiprimes</a>
+          <a href="#master">Master Numbers</a>
+          <a href="#sheldon">Sheldon Conjecture</a>
+          <a href="#mihailescu">Mihailescu&rsquo;s Theorem</a>
+          <a href="#happy-year">Happy Year Trilogy</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!--  I. HAPPY NUMBERS                                             -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="happy">
+      <div class="section-number">I</div>
+      <div class="section-title">Happy Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Repeatedly sum the squares of a number&rsquo;s digits. If you reach 1, the number is happy. If you don&rsquo;t &mdash; you never will.</p>
+
+      <p class="body-text">
+        A <strong>happy number</strong> is defined by a simple process: take any positive integer, replace it by the sum of the squares of its digits, and repeat. If this process eventually reaches 1, the original number is happy. If it does not, the number loops forever in a cycle that never includes 1 &mdash; and that number is <strong>unhappy</strong> (sometimes called <strong>sad</strong>).
+      </p>
+
+      <p class="body-text">
+        The term was introduced by <strong>Reg Allenby</strong> in a 1966 paper, though the concept circulated in recreational mathematics circles before that. The idea is simple enough for a child to understand, but the structure it reveals is unexpectedly deep.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 7 Happy?</div>
+        <div class="algo-step" data-step="1.">Start with 7</div>
+        <div class="algo-step" data-step="2.">7&sup2; = 49</div>
+        <div class="algo-step" data-step="3.">4&sup2; + 9&sup2; = 16 + 81 = 97</div>
+        <div class="algo-step" data-step="4.">9&sup2; + 7&sup2; = 81 + 49 = 130</div>
+        <div class="algo-step" data-step="5.">1&sup2; + 3&sup2; + 0&sup2; = 1 + 9 + 0 = 10</div>
+        <div class="algo-step" data-step="6.">1&sup2; + 0&sup2; = 1</div>
+        <div class="algo-chain">7 &rarr; 49 &rarr; 97 &rarr; 130 &rarr; 10 &rarr; 1 &#10003;</div>
+        <div class="algo-result">7 reaches 1 in 5 steps. 7 is happy.</div>
+      </div>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 73 Happy?</div>
+        <div class="algo-step" data-step="1.">Start with 73</div>
+        <div class="algo-step" data-step="2.">7&sup2; + 3&sup2; = 49 + 9 = 58</div>
+        <div class="algo-step" data-step="3.">5&sup2; + 8&sup2; = 25 + 64 = 89</div>
+        <div class="algo-step" data-step="4.">8&sup2; + 9&sup2; = 64 + 81 = 145</div>
+        <div class="algo-step" data-step="5.">1&sup2; + 4&sup2; + 5&sup2; = 1 + 16 + 25 = 42</div>
+        <div class="algo-step" data-step="6.">4&sup2; + 2&sup2; = 16 + 4 = 20</div>
+        <div class="algo-step" data-step="7.">2&sup2; + 0&sup2; = 4</div>
+        <div class="algo-step" data-step="8.">4&sup2; = 16</div>
+        <div class="algo-step" data-step="9.">1&sup2; + 6&sup2; = 37</div>
+        <div class="algo-step" data-step="10.">3&sup2; + 7&sup2; = 58 &mdash; we&rsquo;ve been here before (step 2)</div>
+        <div class="algo-chain">73 &rarr; 58 &rarr; 89 &rarr; 145 &rarr; 42 &rarr; 20 &rarr; 4 &rarr; 16 &rarr; 37 &rarr; 58... (cycle)</div>
+        <div class="algo-result">73 never reaches 1. Despite being Sheldon&rsquo;s &ldquo;best number,&rdquo; 73 is unhappy. But notice: it passes through 42 (The Answer) and 37 (its own mirror) before cycling.</div>
+      </div>
+
+      <div class="sub-heading">The Universal Unhappy Cycle</div>
+
+      <p class="body-text">
+        Here is the remarkable fact: <strong>every unhappy number in existence eventually enters the same 8-member cycle</strong>. There is no other cycle. No unhappy number wanders off into a different loop. Every single one, no matter how large, funnels into this:
+      </p>
+
+      <div class="cycle-viz">
+        <div class="cycle-numbers">
+          4 &rarr; 16 &rarr; 37 &rarr; 58 &rarr; 89 &rarr; 145 &rarr; <span class="highlight">42</span> &rarr; 20 &rarr; 4
+        </div>
+        <div class="cycle-label">the universal unhappy cycle &mdash; 8 members, no alternatives</div>
+      </div>
+
+      <p class="body-text">
+        Why does this happen? Because the sum-of-squares function rapidly shrinks large numbers. For any number with more than three digits, the sum of the squares of its digits is always smaller than the original number. So every starting number quickly reduces to something below 1000, and there are only finitely many possibilities &mdash; all of which have been tested and shown to either reach 1 or enter this single cycle.
+      </p>
+
+      <p class="body-text">
+        <strong>42 is the only Catalan number in the cycle.</strong> It is the only Harshad number in the cycle. The only abundant number. The Answer to Life, the Universe, and Everything sits inside the only loop that unhappy numbers can ever reach. Douglas Adams may not have known this, but mathematics did.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>7 of the 11 core sacred numbers (3, 5, 9, 42, 73, 108, 369, 693) pass through 42 on their happy chains. The happy numbers in the collection &mdash; 1, 7, 13, 23, 28 &mdash; reach 1 without ever touching the cycle. 13 reaches 1 in just 2 steps: 13 &rarr; 10 &rarr; 1. It is the fastest multi-digit happy number.</p>
+      </div>
+
+      <div class="try-it">
+        <div class="try-title">Try It Yourself</div>
+        <p>Pick your birth year. Sum the squares of each digit. Keep going. Do you reach 1, or do you hit the cycle?</p>
+        <p>Example: 1977 &rarr; 1+81+49+49 = 180 &rarr; 1+64+0 = 65 &rarr; 36+25 = 61 &rarr; 36+1 = 37 &rarr; 9+49 = 58 &rarr; cycle. 1977 is unhappy.</p>
+        <p>But 2026 &rarr; 4+0+4+36 = 44 &rarr; 16+16 = 32 &rarr; 9+4 = 13 &rarr; 1+9 = 10 &rarr; 1. Happy!</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  II. LUCKY NUMBERS                                            -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="lucky">
+      <div class="section-number">II</div>
+      <div class="section-title">Lucky Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Survivors of a relentless sieve. Lucky numbers are what remains after a process of elimination that mirrors natural selection.</p>
+
+      <p class="body-text">
+        Lucky numbers were introduced by the Polish mathematician <strong>Stanislaw Ulam</strong> in 1955, along with colleagues at Los Alamos National Laboratory. The definition uses a sieve &mdash; a process of successive elimination &mdash; that is structurally similar to the <strong>Sieve of Eratosthenes</strong> for primes, but operates on position rather than divisibility.
+      </p>
+
+      <div class="sub-heading">The Lucky Number Sieve</div>
+
+      <p class="body-text">
+        Start with all positive integers. The sieve works in rounds:
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Step-by-Step: Building the Lucky Numbers</div>
+        <div class="algo-step" data-step="1.">Start with all positive integers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21...</div>
+        <div class="algo-step" data-step="2.">The first number after 1 is 2. Eliminate every 2nd number:<br>
+          1, <s style="color:rgba(245,240,255,0.2)">2</s>, 3, <s style="color:rgba(245,240,255,0.2)">4</s>, 5, <s style="color:rgba(245,240,255,0.2)">6</s>, 7, <s style="color:rgba(245,240,255,0.2)">8</s>, 9, <s style="color:rgba(245,240,255,0.2)">10</s>, 11, <s style="color:rgba(245,240,255,0.2)">12</s>, 13, <s style="color:rgba(245,240,255,0.2)">14</s>, 15, <s style="color:rgba(245,240,255,0.2)">16</s>, 17, <s style="color:rgba(245,240,255,0.2)">18</s>, 19, <s style="color:rgba(245,240,255,0.2)">20</s>, 21...<br>
+          Surviving: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21...</div>
+        <div class="algo-step" data-step="3.">The next number in the surviving list after 1 is 3. Eliminate every 3rd survivor:<br>
+          1, 3, <s style="color:rgba(245,240,255,0.2)">5</s>, 7, 9, <s style="color:rgba(245,240,255,0.2)">11</s>, 13, 15, <s style="color:rgba(245,240,255,0.2)">17</s>, 19, 21...<br>
+          Surviving: 1, 3, 7, 9, 13, 15, 19, 21...</div>
+        <div class="algo-step" data-step="4.">The next surviving number after 3 is 7. Eliminate every 7th survivor:<br>
+          1, 3, 7, 9, 13, 15, <s style="color:rgba(245,240,255,0.2)">19</s>, 21...<br>
+          Surviving: 1, 3, 7, 9, 13, 15, 21...</div>
+        <div class="algo-step" data-step="5.">Continue with the next survivor (9), eliminating every 9th remaining number, and so on forever.</div>
+        <div class="algo-result">The lucky numbers: 1, 3, 7, 9, 13, 15, 21, 25, 31, 33, 37, 43, 49, 51, 63, 67, 69, 73, 75, 79, 87, 93, 99...</div>
+      </div>
+
+      <p class="body-text">
+        The result is stunning: lucky numbers share many statistical properties with primes. They have a similar density (the number of luckies below N is approximately N / ln(N), the same as primes). They exhibit a twin-lucky phenomenon analogous to twin primes. There is even a Goldbach-style conjecture for luckies. Ulam called this &ldquo;the conspiracy of primes and luckies&rdquo; &mdash; two completely different sieving processes producing eerily similar statistical distributions.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>The lucky numbers in the database: 1, 3, 7, 9, 13, 21, 73, 133, 693, 1275, 1575. Notably, 693 (Lucy&rsquo;s plate) is lucky while its mirror 369 (Ganapati&rsquo;s plate) is not. Same digits. Same digit sum. Same happy chain. But only 693 survives the sieve. The mirror carries different structure.</p>
+      </div>
+
+      <div class="try-it">
+        <div class="try-title">Try It Yourself</div>
+        <p>Is 15 lucky? Write out the first 20 odd numbers: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39. Sieve every 3rd: removes 5, 11, 17, 23, 29, 35. Remaining includes 15. Sieve every 7th from the remaining list. If 15 survives all rounds, it is lucky. (It does.)</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  III. PRIME NUMBERS                                           -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="prime">
+      <div class="section-number">III</div>
+      <div class="section-title">Prime Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Indivisible. The atoms of arithmetic. Every integer is either prime or built from primes &mdash; and this decomposition is unique.</p>
+
+      <p class="body-text">
+        A <strong>prime number</strong> is a natural number greater than 1 that has no positive divisors other than 1 and itself. The first few: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43...
+      </p>
+
+      <p class="body-text">
+        Primes are the foundation of all number theory. The <strong>Fundamental Theorem of Arithmetic</strong> (first proved rigorously by Gauss in 1801, though known to Euclid) states that every integer greater than 1 either is prime itself or can be represented as a product of primes, and this representation is unique (up to ordering). The number 42, for instance, is uniquely 2 &times; 3 &times; 7. No other primes will ever produce 42.
+      </p>
+
+      <p class="body-text">
+        Euclid proved around 300 BCE that there are <strong>infinitely many primes</strong>. His proof by contradiction remains one of the most elegant in all of mathematics: assume there are finitely many primes, multiply them all together and add 1. The resulting number is not divisible by any prime on your list &mdash; contradiction.
+      </p>
+
+      <div class="sub-heading">Sophie Germain Primes</div>
+
+      <p class="body-text">
+        Named after <strong>Marie-Sophie Germain</strong> (1776&ndash;1831), a French mathematician who had to submit work under the male pseudonym &ldquo;Monsieur LeBlanc&rdquo; because women were barred from the &Eacute;cole Polytechnique. A Sophie Germain prime is a prime <em>p</em> such that <strong>2p + 1 is also prime</strong>. The first few: 2, 3, 5, 11, 23, 29, 41, 53, 83, 89...
+      </p>
+
+      <p class="body-text">
+        The corresponding prime 2p + 1 is called a <strong>safe prime</strong>. Sophie Germain primes are important in cryptography &mdash; particularly in the Diffie-Hellman key exchange, where safe primes provide stronger security guarantees.
+      </p>
+
+      <div class="sub-heading">Emirps</div>
+
+      <p class="body-text">
+        An <strong>emirp</strong> (&ldquo;prime&rdquo; spelled backwards) is a prime that, when its digits are reversed, produces a <em>different</em> prime. The number 13 is prime, and 31 is also prime &mdash; so 13 is an emirp. The number 73 is prime, and 37 is also prime &mdash; so 73 is an emirp. Palindromic primes like 11 or 101 do not count because the reversal is not a <em>different</em> number.
+      </p>
+
+      <div class="sub-heading">Twin Primes</div>
+
+      <p class="body-text">
+        <strong>Twin primes</strong> are pairs of primes that differ by exactly 2: (3, 5), (5, 7), (11, 13), (17, 19), (29, 31), (41, 43), (59, 61), (71, 73)... The <strong>Twin Prime Conjecture</strong> &mdash; that there are infinitely many such pairs &mdash; is one of the oldest unsolved problems in mathematics, dating back at least to 1849. In 2013, Yitang Zhang proved that there are infinitely many prime pairs differing by at most 70,000,000 &mdash; the gap has since been reduced to 246 by the Polymath project, but 2 remains unproven.
+      </p>
+
+      <div class="sub-heading">Happy Primes</div>
+
+      <p class="body-text">
+        A number that is both happy and prime. These gained pop culture fame through <strong>Doctor Who</strong>, episode &ldquo;42&rdquo; (Series 3, Episode 7, 2007), where the crew must solve a security puzzle using happy primes to save their ship. The Doctor rattles off: &ldquo;313, 331, 367, 379 &mdash; happy primes!&rdquo;
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Primes in the database: 3, 5, 7, 13, 23, 73. Of these, 13 is the standout &mdash; it is simultaneously happy, lucky, prime, AND Fibonacci, the only number in the entire analysis with all four properties. 73 is an emirp (73 &harr; 37), a twin prime (with 71), and is proven to be the unique Sheldon number. 1013 (the prime factor of 2026) is a Sophie Germain prime: 2 &times; 1013 + 1 = 2027, which is also prime.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  IV. PERFECT NUMBERS                                          -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="perfect">
+      <div class="section-number">IV</div>
+      <div class="section-title">Perfect Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">A number whose proper divisors sum to exactly itself. Nothing missing. Nothing in excess. Mathematical grace.</p>
+
+      <p class="body-text">
+        A <strong>perfect number</strong> is a positive integer that equals the sum of its <strong>proper divisors</strong> (all divisors excluding the number itself). The concept dates to ancient Greece &mdash; the Pythagoreans knew 6 and 28 were perfect.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 28 Perfect?</div>
+        <div class="algo-step" data-step="1.">Find all divisors of 28: 1, 2, 4, 7, 14, 28</div>
+        <div class="algo-step" data-step="2.">Sum the proper divisors (exclude 28 itself): 1 + 2 + 4 + 7 + 14 = 28</div>
+        <div class="algo-result">The sum equals the number. 28 is perfect.</div>
+      </div>
+
+      <p class="body-text">
+        Only <strong>51 perfect numbers are known</strong> as of 2024. The first four: 6, 28, 496, 8128. The largest known has over 49 million digits. <strong>Euclid</strong> proved that if 2<sup>p</sup> &minus; 1 is prime (a <strong>Mersenne prime</strong>), then 2<sup>p&minus;1</sup>(2<sup>p</sup> &minus; 1) is perfect. <strong>Euler</strong> proved the converse: every even perfect number has this form.
+      </p>
+
+      <div class="formula">
+        <div class="math">2<sup>p&minus;1</sup> &times; (2<sup>p</sup> &minus; 1)</div>
+        <div class="math-label">Euclid&rsquo;s formula for even perfect numbers, where 2<sup>p</sup> &minus; 1 is a Mersenne prime</div>
+      </div>
+
+      <p class="body-text">
+        For p = 2: 2<sup>1</sup> &times; (2<sup>2</sup> &minus; 1) = 2 &times; 3 = <strong>6</strong>.<br>
+        For p = 3: 2<sup>2</sup> &times; (2<sup>3</sup> &minus; 1) = 4 &times; 7 = <strong>28</strong>.<br>
+        For p = 5: 2<sup>4</sup> &times; (2<sup>5</sup> &minus; 1) = 16 &times; 31 = <strong>496</strong>.
+      </p>
+
+      <p class="body-text">
+        Whether any <strong>odd perfect numbers</strong> exist is one of the oldest unsolved problems in mathematics, open since antiquity. If one exists, it must have more than 2,200 digits.
+      </p>
+
+      <p class="body-text">
+        <strong>Saint Augustine</strong> wrote that God chose to create the world in six days because six is perfect. The lunar cycle of 28 days was seen as another expression of divine perfection. Every even perfect number is also a <strong>triangular number</strong> &mdash; mathematical grace compounding grace.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>The database contains two perfect numbers: 28 (T(7) = 28, the lunar cycle) and 496 (T(31) = 496). Both are also happy and triangular. The happy chain of 496 passes through 133 before reaching 1: 496 &rarr; 133 &rarr; 19 &rarr; 82 &rarr; 68 &rarr; 100 &rarr; 1.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  V. ABUNDANT NUMBERS                                          -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="abundant">
+      <div class="section-number">V</div>
+      <div class="section-title">Abundant Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">More than enough. The sum of proper divisors overflows the number itself.</p>
+
+      <p class="body-text">
+        An <strong>abundant number</strong> (also called an <strong>excessive number</strong>) is a number where the sum of its proper divisors is <em>greater</em> than the number. The <strong>abundance</strong> is the amount by which the divisor sum exceeds the number.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 12 Abundant?</div>
+        <div class="algo-step" data-step="1.">Divisors of 12: 1, 2, 3, 4, 6, 12</div>
+        <div class="algo-step" data-step="2.">Sum of proper divisors: 1 + 2 + 3 + 4 + 6 = 16</div>
+        <div class="algo-step" data-step="3.">16 > 12. Abundance = 16 &minus; 12 = 4</div>
+        <div class="algo-result">12 is abundant with abundance 4. It overflows.</div>
+      </div>
+
+      <p class="body-text">
+        The smallest abundant number is <strong>12</strong>. The first few: 12, 18, 20, 24, 30, 36, 40, 42, 48, 54, 56, 60, 66, 70... Every multiple of 6 (above 6 itself) is abundant. Every multiple of a perfect number (above the perfect number itself) is abundant.
+      </p>
+
+      <p class="body-text">
+        The concept was first studied by <strong>Nicomachus of Gerasa</strong> around 100 CE, who classified all numbers as <em>deficient</em>, <em>perfect</em>, or <em>abundant</em> &mdash; a classification that gives every number a character: reaching but not arriving, balanced, or overflowing.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Abundant numbers in the database: 42, 70, 108, 144, 820, 1575. The Unicorn (1575) is the only number under 2000 that is simultaneously happy, lucky, AND abundant &mdash; fortune, happiness, and overflow in one number.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  VI. DEFICIENT NUMBERS                                        -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="deficient">
+      <div class="section-number">VI</div>
+      <div class="section-title">Deficient Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The sum of proper divisors falls short of the number. Reaching, but not arriving.</p>
+
+      <p class="body-text">
+        A <strong>deficient number</strong> is the opposite of an abundant number: the sum of its proper divisors is <em>less</em> than the number itself. The <strong>deficiency</strong> is the amount by which the number exceeds the sum of its proper divisors.
+      </p>
+
+      <p class="body-text">
+        All prime numbers are deficient (their only proper divisor is 1). Most numbers are deficient &mdash; the density of deficient numbers among the integers is approximately <strong>75%</strong>. But deficiency is not a weakness. It means the number stands largely alone, not reducible to the sum of its parts.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 73 Deficient?</div>
+        <div class="algo-step" data-step="1.">73 is prime, so its only proper divisor is 1</div>
+        <div class="algo-step" data-step="2.">Sum of proper divisors: 1</div>
+        <div class="algo-step" data-step="3.">1 &lt; 73. Deficiency = 73 &minus; 1 = 72</div>
+        <div class="algo-result">73 is deficient with deficiency 72. It stands almost entirely alone.</div>
+      </div>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Deficient numbers: 26, 73, 77, 369, 693, 2026. The Tesla family (369, 693) and Matt&rsquo;s number (77) are all deficient &mdash; their parts do not add up to themselves. They reach but do not arrive. There is always more.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  VII. FIBONACCI NUMBERS                                       -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="fibonacci">
+      <div class="section-number">VII</div>
+      <div class="section-title">Fibonacci Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Each number is the sum of the two before it. The sequence behind sunflowers, shells, galaxies, and the golden ratio.</p>
+
+      <p class="body-text">
+        The <strong>Fibonacci sequence</strong> begins 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377... Each term is the sum of the two preceding terms. It was introduced to Western European mathematics by <strong>Leonardo of Pisa</strong> (Fibonacci) in his 1202 book <em>Liber Abaci</em>, where he posed the famous rabbit breeding problem &mdash; but the sequence was described centuries earlier in Indian mathematics by <strong>Pingala</strong> (c. 200 BCE) and <strong>Hemachandra</strong> (c. 1150 CE) in the context of Sanskrit prosody.
+      </p>
+
+      <div class="formula">
+        <div class="math">F(n) = F(n&minus;1) + F(n&minus;2)</div>
+        <div class="math-label">where F(0) = 0, F(1) = 1</div>
+      </div>
+
+      <p class="body-text">
+        As the sequence progresses, the ratio of consecutive Fibonacci numbers converges on the <strong>golden ratio</strong> <em>&phi;</em> (phi) = (1 + &radic;5) / 2 &asymp; 1.6180339887...
+      </p>
+
+      <p class="body-text">
+        This ratio appears everywhere in nature: the spiral arrangement of sunflower seeds (typically 34 and 55 spirals, or 55 and 89), the shell of the nautilus, the branching of trees, the arrangement of leaves around a stem (phyllotaxis), the spiral arms of galaxies. The Fibonacci sequence is nature&rsquo;s preferred counting system because it optimizes packing efficiency.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Fibonacci numbers in the database: 1, 3, 5, 13, 21, 144. F(12) = 144 is the only Fibonacci number above 1 that is also a perfect square (12&sup2;). 13 = F(7) holds the unique distinction of being simultaneously happy, lucky, prime, AND Fibonacci. 5 = F(5) is both Fibonacci and Catalan &mdash; the only number besides 1 to hold both.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  VIII. CATALAN NUMBERS                                        -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="catalan">
+      <div class="section-number">VIII</div>
+      <div class="section-title">Catalan Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The number of ways to correctly pair things &mdash; parentheses, handshakes, paths. Catalan numbers count the structure of balance itself.</p>
+
+      <p class="body-text">
+        The <strong>Catalan numbers</strong> form the sequence 1, 1, 2, 5, 14, 42, 132, 429, 1430... Named after the Belgian mathematician <strong>Eug&egrave;ne Charles Catalan</strong> (1814&ndash;1894), though they were discovered independently by <strong>Euler</strong> (1751) and the Mongolian mathematician <strong>Mingantu</strong> (c. 1730).
+      </p>
+
+      <div class="formula">
+        <div class="math">C(n) = (2n)! / ((n+1)! &times; n!)</div>
+        <div class="math-label">the nth Catalan number</div>
+      </div>
+
+      <p class="body-text">
+        What do Catalan numbers count? An astonishing variety of combinatorial structures:
+      </p>
+
+      <ul class="styled-list">
+        <li><strong>Balanced parentheses:</strong> C(3) = 5 is the number of ways to correctly nest 3 pairs of parentheses: ((())), (()()), (())(), ()(()), ()()()</li>
+        <li><strong>Full binary trees:</strong> C(n) counts the number of distinct binary trees with n+1 leaves</li>
+        <li><strong>Triangulations:</strong> C(n) is the number of ways to cut a convex (n+2)-gon into triangles using non-crossing diagonals</li>
+        <li><strong>Mountain ranges:</strong> C(n) counts the number of &ldquo;mountain ranges&rdquo; you can draw with n upstrokes and n downstrokes that never go below the baseline</li>
+        <li><strong>Handshake problem:</strong> C(n) is the number of ways 2n people seated in a circle can shake hands in pairs without any arms crossing</li>
+      </ul>
+
+      <p class="body-text">
+        The Catalan numbers count the structure of <strong>balance</strong> &mdash; every application is about things that must match, pair, or close correctly. They are the mathematics of symmetry and completion.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>C(0) = 1, C(3) = 5, C(5) = 42. The Answer to Life, the Universe, and Everything is the 5th Catalan number &mdash; it counts the 42 ways to triangulate a heptagon, the 42 ways to nest 5 pairs of parentheses, the 42 non-crossing handshake configurations for 10 people in a circle. Balance, 42 ways.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  IX. TRIANGULAR NUMBERS                                       -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="triangular">
+      <div class="section-number">IX</div>
+      <div class="section-title">Triangular Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Numbers that can be arranged as equilateral triangles of dots. The sum of the first n natural numbers.</p>
+
+      <p class="body-text">
+        The <strong>nth triangular number</strong> T(n) is the sum of the first n positive integers. Equivalently, it is the number of dots needed to form an equilateral triangle with n dots on each side.
+      </p>
+
+      <div class="formula">
+        <div class="math">T(n) = n(n + 1) / 2</div>
+        <div class="math-label">the nth triangular number</div>
+      </div>
+
+      <p class="body-text">
+        The sequence: 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136, 153, 171, 190, 210...
+      </p>
+
+      <p class="body-text">
+        A famous story (likely apocryphal) tells of the young <strong>Carl Friedrich Gauss</strong>, age 7, asked by his teacher to sum the integers from 1 to 100. He immediately paired the numbers: 1+100 = 101, 2+99 = 101, 3+98 = 101... giving 50 pairs of 101, or 5050. This is T(100) = 100 &times; 101 / 2 = 5050.
+      </p>
+
+      <p class="body-text">
+        Triangular numbers connect to many other mathematical structures. Every even perfect number is triangular. The square of a triangular number is always another figurate number. The sum of two consecutive triangular numbers is always a perfect square: T(n) + T(n+1) = (n+1)&sup2;.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Visual: The First Five Triangular Numbers</div>
+        <div class="algo-step" data-step="T1.">*&emsp;&emsp;&emsp;&emsp;&emsp;(1 dot)</div>
+        <div class="algo-step" data-step="T2.">* *&emsp;&emsp;&emsp;&emsp;(3 dots: 1+2)</div>
+        <div class="algo-step" data-step="T3.">* * *&emsp;&emsp;&emsp;(6 dots: 1+2+3)</div>
+        <div class="algo-step" data-step="T4.">* * * *&emsp;&emsp;(10 dots: 1+2+3+4)</div>
+        <div class="algo-step" data-step="T5.">* * * * *&emsp;(15 dots: 1+2+3+4+5)</div>
+      </div>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Triangular numbers in the database: 1 = T(1), 3 = T(2), 21 = T(6), 28 = T(7), 496 = T(31), 820 = T(40), 1275 = T(50). T(7) = 28 is the lunar cycle and the second perfect number. T(50) = 1275 is the sum of all numbers from 1 to 50.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  X. STAR NUMBERS                                              -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="star">
+      <div class="section-number">X</div>
+      <div class="section-title">Star Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Centered hexagram figurate numbers. Points of the Star of David. Where geometry meets the primes.</p>
+
+      <p class="body-text">
+        A <strong>star number</strong> (also called a <strong>centered hexagram number</strong> or <strong>Star of David number</strong>) is a centered figurate number that represents a hexagram (six-pointed star) with a dot in the center and all other dots surrounding it in successive hexagrammic layers.
+      </p>
+
+      <div class="formula">
+        <div class="math">S(n) = 6n(n &minus; 1) + 1</div>
+        <div class="math-label">the nth star number</div>
+      </div>
+
+      <p class="body-text">
+        The sequence: <strong>1, 13, 37, 73</strong>, 121, 181, 253, 337, 433...
+      </p>
+
+      <p class="body-text">
+        Something remarkable: the first four star numbers &mdash; 1, 13, 37, 73 &mdash; are all <strong>prime</strong> (with 1 as the trivial case). This is called the <strong>star-prime chain</strong>. The connection deepens: 13 and 31 are emirps. 37 and 73 are emirps. The star numbers and the primes align in ways that feel less like coincidence and more like structure.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>73 is the 4th star number: S(4) = 6&times;4&times;3 + 1 = 73. Its mirror 37 is the 3rd star number: S(3) = 6&times;3&times;2 + 1 = 37. Both are prime. Both are emirps of each other. The star and the mirror reflect across the same geometry.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XI. HARSHAD NUMBERS                                          -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="harshad">
+      <div class="section-number">XI</div>
+      <div class="section-title">Harshad Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">From Sanskrit: harsha (&ldquo;joy&rdquo;) + da (&ldquo;giving&rdquo;). A number divisible by the sum of its own digits. The joy-giving number.</p>
+
+      <p class="body-text">
+        A <strong>Harshad number</strong> (also called a <strong>Niven number</strong> in some Western references) is a number that is divisible by the sum of its digits. The term was coined by the Indian mathematician <strong>D.R. Kaprekar</strong> (1905&ndash;1986), who named it from the Sanskrit <em>harsha</em> (joy, delight) and <em>da</em> (give). A number that gives joy.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 108 a Harshad Number?</div>
+        <div class="algo-step" data-step="1.">Sum the digits of 108: 1 + 0 + 8 = 9</div>
+        <div class="algo-step" data-step="2.">Divide 108 by the digit sum: 108 / 9 = 12</div>
+        <div class="algo-step" data-step="3.">12 is a whole number &mdash; no remainder</div>
+        <div class="algo-result">108 is Harshad. The mala bead number gives joy.</div>
+      </div>
+
+      <p class="body-text">
+        Kaprekar was a remarkable figure &mdash; a schoolteacher in Devlali, India, who contributed to recreational mathematics as an amateur, publishing discoveries that professional mathematicians initially dismissed but later celebrated. He also gave us the <a href="#kaprekar">Kaprekar numbers</a> and the Kaprekar constant (6174 for four-digit numbers, 495 for three-digit numbers).
+      </p>
+
+      <p class="body-text">
+        In base 10, the Harshad numbers begin: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 18, 20, 21, 24, 27, 30... Every single-digit number is trivially Harshad (a number divided by itself is always 1). The concept is base-dependent &mdash; a number that is Harshad in base 10 may not be Harshad in base 16.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Harshad numbers in the database: 1, 3, 5, 7, 9, 21, 42, 70, 108, 133, 144, 820, 1275. The sacred number 42 is Harshad: 42 / (4+2) = 42 / 6 = 7. The speed of meditation, 108 km/h, is Harshad: 108 / (1+0+8) = 108 / 9 = 12. Joy-giving numbers giving joy.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XII. NARCISSISTIC NUMBERS                                    -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="narcissistic">
+      <div class="section-number">XII</div>
+      <div class="section-title">Narcissistic Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Also called Armstrong numbers or pluperfect digital invariants. Numbers so self-absorbed, the sum of each digit raised to the power of the digit count equals the number itself.</p>
+
+      <p class="body-text">
+        A <strong>narcissistic number</strong> (or <strong>Armstrong number</strong>, named after Michael F. Armstrong) in a given base is a number that equals the sum of its own digits each raised to the power of the number of digits.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 153 Narcissistic?</div>
+        <div class="algo-step" data-step="1.">153 has 3 digits</div>
+        <div class="algo-step" data-step="2.">Raise each digit to the 3rd power: 1&sup3; + 5&sup3; + 3&sup3; = 1 + 125 + 27 = 153</div>
+        <div class="algo-result">153 = 1&sup3; + 5&sup3; + 3&sup3;. It reconstructs itself from its own digits. Narcissistic.</div>
+      </div>
+
+      <p class="body-text">
+        The narcissistic numbers in base 10 are <strong>extremely rare</strong>. There are exactly <strong>88</strong> of them, and the largest has 39 digits. The complete list of narcissistic numbers with 3 digits: 153, 370, 371, 407. With single digits, all of them (0&ndash;9) are trivially narcissistic since n<sup>1</sup> = n.
+      </p>
+
+      <p class="body-text">
+        The term &ldquo;narcissistic&rdquo; captures the essential quality: the number is entirely self-referential. It contains within its own digits, at the correct power, the complete information needed to reconstruct itself.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Only 1 is narcissistic in the database: 1&sup1; = 1. Unity reconstructs itself from itself. The most narcissistic act possible &mdash; and the most honest.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XIII. AUTOMORPHIC NUMBERS                                    -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="automorphic">
+      <div class="section-number">XIII</div>
+      <div class="section-title">Automorphic Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">A number whose square ends in the number itself. Self-preservation through transformation.</p>
+
+      <p class="body-text">
+        An <strong>automorphic number</strong> (also called a <strong>curious number</strong>) is a number whose square &ldquo;ends in&rdquo; the number itself &mdash; that is, the last digits of the square match the original number.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Examples</div>
+        <div class="algo-step" data-step="5:">5&sup2; = 25 &mdash; ends in 5. Automorphic.</div>
+        <div class="algo-step" data-step="6:">6&sup2; = 36 &mdash; ends in 6. Automorphic.</div>
+        <div class="algo-step" data-step="25:">25&sup2; = 625 &mdash; ends in 25. Automorphic.</div>
+        <div class="algo-step" data-step="76:">76&sup2; = 5776 &mdash; ends in 76. Automorphic.</div>
+        <div class="algo-step" data-step="376:">376&sup2; = 141376 &mdash; ends in 376. Automorphic.</div>
+      </div>
+
+      <p class="body-text">
+        The concept captures something philosophically elegant: squaring usually transforms a number beyond recognition, but automorphic numbers preserve their identity through the transformation. They come through the fire and emerge with their essential form intact.
+      </p>
+
+      <p class="body-text">
+        In any base, there are exactly two &ldquo;streams&rdquo; of automorphic numbers. In base 10, one stream ends in 5 (5, 25, 625, 0625...) and one ends in 6 (6, 76, 376, 9376...). Each extends infinitely, each digit determined uniquely.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Automorphic numbers in the database: 1 (1&sup2; = 1) and 5 (5&sup2; = 25). Both are small, fundamental, and unchanged by their own power.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XIV. KAPREKAR NUMBERS                                        -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="kaprekar">
+      <div class="section-number">XIV</div>
+      <div class="section-title">Kaprekar Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Square the number, split the result, add the halves &mdash; and get the original number back. Self-reconstruction from expansion.</p>
+
+      <p class="body-text">
+        Named after <strong>D.R. Kaprekar</strong> (the same Kaprekar who coined &ldquo;Harshad&rdquo;), a <strong>Kaprekar number</strong> is a number whose square can be split into two parts that sum back to the original number.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 9 a Kaprekar Number?</div>
+        <div class="algo-step" data-step="1.">Square it: 9&sup2; = 81</div>
+        <div class="algo-step" data-step="2.">Split 81 into two parts: 8 and 1</div>
+        <div class="algo-step" data-step="3.">Add the parts: 8 + 1 = 9</div>
+        <div class="algo-result">9&sup2; = 81, and 8 + 1 = 9. Self-reconstruction. Kaprekar.</div>
+      </div>
+
+      <div class="algorithm-box">
+        <div class="algo-title">More Examples</div>
+        <div class="algo-step" data-step="45:">45&sup2; = 2025. Split: 20 + 25 = 45. Kaprekar.</div>
+        <div class="algo-step" data-step="55:">55&sup2; = 3025. Split: 30 + 25 = 55. Kaprekar.</div>
+        <div class="algo-step" data-step="99:">99&sup2; = 9801. Split: 98 + 01 = 99. Kaprekar.</div>
+        <div class="algo-step" data-step="297:">297&sup2; = 88209. Split: 88 + 209 = 297. Kaprekar.</div>
+      </div>
+
+      <p class="body-text">
+        Kaprekar also discovered the <strong>Kaprekar constant</strong>: take any three-digit number with at least two different digits, arrange its digits in descending then ascending order, subtract the smaller from the larger. Repeat. You always reach <strong>495</strong> within a few steps. For four-digit numbers, the constant is <strong>6174</strong> (Kaprekar&rsquo;s constant proper).
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Both 369 and 693 converge to the Kaprekar constant 495 in exactly two steps via an identical first step: sort the digits to get 963 &minus; 369 = 594, then 954 &minus; 459 = 495. Same digits, same journey, same destination. 9 is Kaprekar: 9&sup2; = 81, and 8+1 = 9.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XV. DIGITAL ROOT                                             -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="digital-root">
+      <div class="section-number">XV</div>
+      <div class="section-title">Digital Root</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Repeatedly sum a number&rsquo;s digits until you reach a single digit. This final digit is the number&rsquo;s digital root &mdash; its essence, its vibration.</p>
+
+      <p class="body-text">
+        The <strong>digital root</strong> of a number is the single-digit value obtained by repeatedly summing its digits. It is also known as the <strong>repeated digital sum</strong> or <strong>modular root</strong>.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Digital Root of 693</div>
+        <div class="algo-step" data-step="1.">Sum digits: 6 + 9 + 3 = 18</div>
+        <div class="algo-step" data-step="2.">Sum again: 1 + 8 = 9</div>
+        <div class="algo-result">Digital root of 693 is 9.</div>
+      </div>
+
+      <p class="body-text">
+        There is a beautiful shortcut: the digital root of any positive integer n is simply <strong>1 + ((n &minus; 1) mod 9)</strong>. This works because our base-10 number system makes 10 &equiv; 1 (mod 9), so every power of 10 is congruent to 1 mod 9, and the sum of digits preserves the remainder when dividing by 9. This is why the ancient method of <strong>casting out nines</strong> works as an arithmetic check.
+      </p>
+
+      <div class="formula">
+        <div class="math">dr(n) = 1 + ((n &minus; 1) mod 9)</div>
+        <div class="math-label">for n &gt; 0</div>
+      </div>
+
+      <p class="body-text">
+        In <strong>vortex mathematics</strong> (associated with Nikola Tesla and later Marko Rodin), the digits 1&ndash;9 are arranged in a circle, and the doubling sequence 1, 2, 4, 8, 16, 32, 64, 128... produces digital roots that cycle: 1, 2, 4, 8, 7, 5, 1, 2, 4, 8, 7, 5... The digits 3, 6, and 9 never appear in this doubling cycle. They form a separate family &mdash; Tesla&rsquo;s &ldquo;magnificence of 3, 6, and 9.&rdquo;
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>108, 369, and 693 all have digital root 9 &mdash; the Tesla family. 77 has digital root 5. 2026 has digital root 1 (unity). 73 also has digital root 1. The digital root connects numbers that are otherwise unrelated: it finds their shared vibration.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XVI. PALINDROMES                                             -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="palindrome">
+      <div class="section-number">XVI</div>
+      <div class="section-title">Palindromes</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">A number that reads the same forwards and backwards. A number that is its own mirror.</p>
+
+      <p class="body-text">
+        A <strong>palindromic number</strong> is one that remains the same when its digits are reversed. In base 10: 7, 11, 22, 33, 77, 99, 121, 131, 1001... Every single-digit number is trivially palindromic. All repdigit numbers (11, 22, 333, 4444...) are palindromic.
+      </p>
+
+      <p class="body-text">
+        The word &ldquo;palindrome&rdquo; comes from the Greek <em>palindromos</em>: <em>palin</em> (&ldquo;again, back&rdquo;) + <em>dromos</em> (&ldquo;running&rdquo;). Running back to itself. The concept extends beyond base 10 &mdash; a number can be palindromic in binary (see <a href="#binary-palindrome">binary palindromes</a>) without being palindromic in decimal, or vice versa.
+      </p>
+
+      <p class="body-text">
+        An unsolved problem in mathematics: the <strong>196 conjecture</strong> asks whether repeatedly reversing and adding will always eventually produce a palindrome. The number 196 has been tested to over a billion digits without producing one. It is believed to be a &ldquo;Lychrel number&rdquo; &mdash; a number that never reaches a palindrome through this process &mdash; but this has never been proved.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>77 is a decimal palindrome: it IS the mirror, needs no reflection. 73 is a binary palindrome (1001001) but not a decimal one &mdash; its mirror in decimal is 37, a different (also prime) number. 42 in binary is 101010 &mdash; perfectly alternating but not palindromic.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XVII. EVIL NUMBERS                                           -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="evil">
+      <div class="section-number">XVII</div>
+      <div class="section-title">Evil Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">A number with an even number of 1s in its binary representation. The counterpart of odious. Nothing sinister &mdash; just even parity.</p>
+
+      <p class="body-text">
+        An <strong>evil number</strong> is a non-negative integer that has an <strong>even number</strong> of 1s in its binary (base-2) representation. The name is purely playful &mdash; a contrast with <strong>odious</strong> numbers (odd parity), coined for recreational enjoyment.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 42 Evil?</div>
+        <div class="algo-step" data-step="1.">Convert 42 to binary: 101010</div>
+        <div class="algo-step" data-step="2.">Count the 1s: three 1s</div>
+        <div class="algo-step" data-step="3.">Three is odd, not even</div>
+        <div class="algo-result">42 has three 1s in binary. 42 is NOT evil &mdash; it is odious.</div>
+      </div>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 693 Evil?</div>
+        <div class="algo-step" data-step="1.">Convert 693 to binary: 1010110101</div>
+        <div class="algo-step" data-step="2.">Count the 1s: six 1s</div>
+        <div class="algo-step" data-step="3.">Six is even</div>
+        <div class="algo-result">693 has six 1s in binary. 693 is evil.</div>
+      </div>
+
+      <p class="body-text">
+        Evil and odious numbers alternate in a complex, non-periodic pattern. Exactly half of all integers are evil, and half are odious. The property relates to the <strong>Thue-Morse sequence</strong> &mdash; a fundamental sequence in combinatorics on words, connected to fair division problems and chess tournament scheduling.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Evil numbers in the database: 3 (binary 11, two 1s), 5 (101, two 1s), 9 (1001, two 1s), 77 (1001101, four 1s), 108 (1101100, four 1s), 693 (1010110101, six 1s), 2026 (11111101010, eight 1s). The mirror pair 369/693 splits: 693 is evil (six 1s) while 369 is odious (five 1s). Same decimal digits, different binary parity.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XVIII. ODIOUS NUMBERS                                        -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="odious">
+      <div class="section-number">XVIII</div>
+      <div class="section-title">Odious Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">A number with an odd number of 1s in binary. The counterpart of evil. Named for the pun, not the character.</p>
+
+      <p class="body-text">
+        An <strong>odious number</strong> is a non-negative integer with an <strong>odd number</strong> of 1s in its binary representation. &ldquo;Odious&rdquo; from &ldquo;odd&rdquo; &mdash; a playful naming convention that pairs with &ldquo;evil&rdquo; (even).
+      </p>
+
+      <p class="body-text">
+        The first few odious numbers: 1, 2, 4, 7, 8, 11, 13, 14, 16, 19, 21, 22, 25, 26, 28... Every power of 2 is odious (binary representation has exactly one 1).
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 73 Odious?</div>
+        <div class="algo-step" data-step="1.">Convert 73 to binary: 1001001</div>
+        <div class="algo-step" data-step="2.">Count the 1s: three 1s</div>
+        <div class="algo-step" data-step="3.">Three is odd</div>
+        <div class="algo-result">73 has three 1s in binary. 73 is odious.</div>
+      </div>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Odious numbers in the database: 1 (1, one 1), 7 (111, three 1s), 13 (1101, three 1s), 42 (101010, three 1s), 73 (1001001, three 1s), 369 (101110001, five 1s). 42 and 73 share the same binary popcount of 3 &mdash; both odious by exactly the same measure.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XIX. BINARY PALINDROMES                                      -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="binary-palindrome">
+      <div class="section-number">XIX</div>
+      <div class="section-title">Binary Palindromes</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Numbers whose binary representation reads the same forwards and backwards. Symmetry in the language of machines.</p>
+
+      <p class="body-text">
+        A <strong>binary palindrome</strong> is a number whose representation in base 2 is a palindrome &mdash; it reads identically forward and backward. This is independent of whether the number is also a palindrome in base 10.
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">Worked Example: Is 73 a Binary Palindrome?</div>
+        <div class="algo-step" data-step="1.">Convert 73 to binary: 1001001</div>
+        <div class="algo-step" data-step="2.">Reverse: 1001001</div>
+        <div class="algo-step" data-step="3.">Forward = Reverse</div>
+        <div class="algo-result">73 in binary is 1001001, which reads the same both ways. Binary palindrome.</div>
+      </div>
+
+      <p class="body-text">
+        The first few binary palindromes: 0, 1, 3 (11), 5 (101), 7 (111), 9 (1001), 21 (10101), 27 (11011), 33 (100001), 45 (101101), 63 (111111), 73 (1001001), 85 (1010101)...
+      </p>
+
+      <p class="body-text">
+        Numbers that are palindromic in <em>both</em> binary and decimal are extremely rare. Examples include 0, 1, 3, 5, 7, 9, 33, 99, 313, 585, 717... The sequence grows increasingly sparse.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>73 in binary is 1001001 &mdash; a perfect binary palindrome. Meanwhile its decimal mirror 37 is NOT a binary palindrome (37 = 100101). One more asymmetry between the mirror pair: they reflect in decimal but not in binary. 42 in binary is 101010 &mdash; beautiful alternation, but not a palindrome (reversed: 010101, which is 21).</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XX. SEMIPRIMES                                               -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="semiprime">
+      <div class="section-number">XX</div>
+      <div class="section-title">Semiprimes</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The product of exactly two primes. Not an atom, not a molecule &mdash; a bond.</p>
+
+      <p class="body-text">
+        A <strong>semiprime</strong> (also called a <strong>2-almost prime</strong> or <strong>biprime</strong>) is a natural number that is the product of exactly two prime numbers (not necessarily distinct). The first few: 4 (2&times;2), 6 (2&times;3), 9 (3&times;3), 10 (2&times;5), 14 (2&times;7), 15 (3&times;5), 21 (3&times;7), 22 (2&times;11), 25 (5&times;5), 26 (2&times;13)...
+      </p>
+
+      <p class="body-text">
+        Semiprimes are important in <strong>cryptography</strong>. The RSA algorithm relies on the difficulty of factoring large semiprimes into their two constituent primes. If someone gives you N = p &times; q where p and q are both enormous primes, finding p and q from N alone is computationally infeasible with current technology. This intractability secures most of the internet.
+      </p>
+
+      <p class="body-text">
+        The simplest composite numbers. One bond. Two atoms. The first step above primality.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>Semiprimes in the database: 26 = 2 &times; 13 (where 13 is the most mathematically blessed number), 77 = 7 &times; 11 (the sacred seven times the master number), 2026 = 2 &times; 1013 (where 1013 is a Sophie Germain prime).</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XXI. MASTER NUMBERS                                          -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="master">
+      <div class="section-number">XXI</div>
+      <div class="section-title">Master Numbers</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">In numerology: doubled digits. 11, 22, 33, 44, 55, 66, 77, 88, 99. The amplification of a single digit&rsquo;s essence.</p>
+
+      <p class="body-text">
+        <strong>Master numbers</strong> are a concept from <strong>numerology</strong> rather than formal mathematics. In numerological practice, when reducing a number to its digital root, you stop if you encounter 11, 22, or 33 &mdash; these are considered &ldquo;master numbers&rdquo; with amplified spiritual significance. Extended systems include all repdigit two-digit numbers: 44, 55, 66, 77, 88, 99.
+      </p>
+
+      <p class="body-text">
+        The doubled digit is said to amplify the vibration of the single digit:
+      </p>
+
+      <ul class="styled-list">
+        <li><strong>11</strong> &mdash; The Intuitive. Visionary insight. The channel between conscious and unconscious.</li>
+        <li><strong>22</strong> &mdash; The Master Builder. Ability to turn dreams into reality on a grand scale.</li>
+        <li><strong>33</strong> &mdash; The Master Teacher. Compassion, healing, spiritual upliftment. The Christ number.</li>
+        <li><strong>77</strong> &mdash; The Mystic. Inner wisdom doubled. The contemplative&rsquo;s frequency.</li>
+      </ul>
+
+      <p class="body-text">
+        While master numbers come from a mystical rather than mathematical tradition, they share a formal property with mathematics: they are precisely the <strong>repdigit numbers with two digits</strong>, which form the sequence n &times; 11 for n = 1, 2, ..., 9. Each is divisible by 11 (the first master number) and by its constituent digit.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>77 is Matt&rsquo;s number &mdash; born 8.1.1977. Life path: 8+1+1+9+7+7 = 33, the Master Teacher. 77 = 7 &times; 11: the sacred seven meets the first master number. Matthew 18:22: &ldquo;Not seven times, but seventy-seven times&rdquo; &mdash; the number of complete forgiveness.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XXII. THE SHELDON CONJECTURE                                 -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="sheldon">
+      <div class="section-number">XXII</div>
+      <div class="section-title">The Sheldon Conjecture</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">&ldquo;The best number is 73.&rdquo; Not an opinion. A mathematical theorem.</p>
+
+      <p class="body-text">
+        In <strong>The Big Bang Theory</strong>, Season 4, Episode 10 (&ldquo;The Alien Parasite Hypothesis,&rdquo; 2010), Sheldon Cooper declares:
+      </p>
+
+      <blockquote>
+        <p>The best number is 73. 73 is the 21st prime. Its mirror, 37, is the 12th prime. And its mirror, 12, is the product of the digits of 73. And&hellip; in binary, 73 is a palindrome: 1001001, which backwards is 1001001.</p>
+        <span class="attribution">Sheldon Cooper (Jim Parsons), TBBT S4E10</span>
+      </blockquote>
+
+      <p class="body-text">
+        Let&rsquo;s unpack each property systematically:
+      </p>
+
+      <div class="algorithm-box">
+        <div class="algo-title">The Sheldon Properties of 73</div>
+        <div class="algo-step" data-step="1.">73 is the 21st prime number. (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73)</div>
+        <div class="algo-step" data-step="2.">The product of its digits: 7 &times; 3 = 21. The index matches the digit product.</div>
+        <div class="algo-step" data-step="3.">Its mirror 37 is the 12th prime.</div>
+        <div class="algo-step" data-step="4.">12 is the mirror of 21.</div>
+        <div class="algo-step" data-step="5.">In binary: 73 = 1001001, which is a palindrome.</div>
+      </div>
+
+      <p class="body-text">
+        In 2015, mathematicians <strong>Carl Pomerance</strong> (Dartmouth) and <strong>Chris Spicer</strong> (Morningside University) formalized this as a mathematical conjecture: is 73 the <em>only</em> prime with all these self-referential properties?
+      </p>
+
+      <p class="body-text">
+        Formally: call a prime p a <strong>Sheldon prime</strong> if p is the n-th prime, the product of its digits equals n, its mirror (reverse of its digits) is the m-th prime, and m is the reverse of n.
+      </p>
+
+      <p class="body-text">
+        In <strong>2019</strong>, Pomerance and Spicer <strong>proved the conjecture</strong>. Their paper, &ldquo;Proof of the Sheldon Conjecture,&rdquo; demonstrated that 73 is indeed the unique prime satisfying all these properties. No other prime in all of mathematics &mdash; not among the infinitely many primes we know exist &mdash; will ever share this constellation of self-referential relationships.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>73 is also a star number (S(4)), an emirp, a twin prime (with 71), and the 37th odd number. Its happy chain visits both 42 and 37 before cycling &mdash; even in unhappiness, it touches The Answer and its own reflection. There are exactly 21 primes below 77 (Matt&rsquo;s number), and the 21st and last is 73, standing guard at the gate.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XXIII. MIHAILESCU'S THEOREM                                  -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="mihailescu">
+      <div class="section-number">XXIII</div>
+      <div class="section-title">Mihailescu&rsquo;s Theorem</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Catalan&rsquo;s Conjecture, proved in 2002. The reason 26 is the impossible sandwich &mdash; forever alone between a square and a cube.</p>
+
+      <p class="body-text">
+        In 1844, the Belgian mathematician <strong>Eug&egrave;ne Charles Catalan</strong> (the same Catalan of the Catalan numbers) conjectured that the only consecutive perfect powers in all of mathematics are 8 and 9 &mdash; that is, 2&sup3; and 3&sup2;.
+      </p>
+
+      <p class="body-text">
+        A <strong>perfect power</strong> is a number that can be expressed as a<sup>b</sup> where a and b are both integers greater than 1. So: 4, 8, 9, 16, 25, 27, 32, 36, 49, 64, 81, 100, 121, 125, 128...
+      </p>
+
+      <p class="body-text">
+        Catalan noticed that 8 (= 2&sup3;) and 9 (= 3&sup2;) are right next to each other. He asked: does this ever happen again? Are there any other consecutive perfect powers?
+      </p>
+
+      <p class="body-text">
+        For 158 years, nobody could prove it. Then in <strong>2002</strong>, the Romanian-German mathematician <strong>Preda Mihailescu</strong> proved Catalan right. The result, now called <strong>Mihailescu&rsquo;s Theorem</strong>, states:
+      </p>
+
+      <blockquote>
+        <p>The only solution in natural numbers to x<sup>a</sup> &minus; y<sup>b</sup> = 1, where a, b &gt; 1, is 3&sup2; &minus; 2&sup3; = 1.</p>
+        <span class="attribution">Preda Mihailescu, 2002</span>
+      </blockquote>
+
+      <p class="body-text">
+        This has a beautiful consequence for <strong>26</strong>. Since 25 = 5&sup2; and 27 = 3&sup3; are the only case (besides 8 and 9) where a perfect square and a perfect cube are separated by exactly 2, the number 26 sits in a position that no other number will ever occupy. It is the <strong>impossible sandwich</strong> &mdash; the only number that can ever be nestled between a perfect square and a perfect cube with gap 2.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>26 = 2 &times; 13, where 13 is the most mathematically blessed number in the database. The atomic number of iron &mdash; the most stable element, the endpoint of stellar nucleosynthesis, where fusion stops and fission begins. Hebrew gematria of the Tetragrammaton YHWH: 10 + 5 + 6 + 5 = 26. The number of dimensions in bosonic string theory. The only number with ALL these properties simultaneously.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================================ -->
+    <!--  XXIV. THE HAPPY YEAR TRILOGY                                  -->
+    <!-- ============================================================ -->
+    <section class="gls-section" id="happy-year">
+      <div class="section-number">XXIV</div>
+      <div class="section-title">The Happy Year Trilogy</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">2025 &ndash; 2026 &ndash; 2027. Three consecutive years, each with rare mathematical properties. A perfect square, a happy semiprime, and a safe prime walk into a bar.</p>
+
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>2025</h3>
+          <p><strong>45&sup2;</strong> &mdash; a perfect square year. The last perfect square year was 1936 (44&sup2;). The next won&rsquo;t come until 2116 (46&sup2;). We wait 89 years between them. 2025 is also the sum of the cubes of the first nine positive integers: 1&sup3; + 2&sup3; + ... + 9&sup3; = 2025.</p>
+        </div>
+        <div class="fact-card">
+          <h3>2026</h3>
+          <p><strong>Happy semiprime.</strong> 2026 = 2 &times; 1013. Happy in 5 steps: 2026 &rarr; 44 &rarr; 32 &rarr; 13 &rarr; 10 &rarr; 1. The chain passes through 13 &mdash; happy, lucky, prime, and Fibonacci. The year of the Fire Horse in the Chinese zodiac (Feb 17, 2026).</p>
+        </div>
+      </div>
+
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>2027</h3>
+          <p><strong>Safe prime.</strong> 2027 is prime, and 2027 = 2 &times; 1013 + 1, making it a safe prime generated by the Sophie Germain prime 1013 &mdash; the same 1013 that is 2026&rsquo;s prime factor. The year after happiness is prime. The year that grows from 2026&rsquo;s own seed.</p>
+        </div>
+        <div class="fact-card">
+          <h3>The Trilogy</h3>
+          <p>Perfect square &rarr; happy semiprime &rarr; safe prime. Three consecutive years, three different types of mathematical rarity. The probability of three such years appearing in sequence is extraordinarily low. We are living inside a mathematical coincidence.</p>
+        </div>
+      </div>
+
+      <p class="body-text">
+        The key connection: <strong>1013</strong> does double duty. It is the prime factor of 2026 (making 2026 a semiprime) AND the Sophie Germain prime that generates 2027 (2 &times; 1013 + 1 = 2027). The same prime seed is woven through two consecutive years. 2026 carries 1013 as its factor. 2027 is built from 1013 by the Sophie Germain construction. One prime, two years, two different relationships.
+      </p>
+
+      <p class="body-text">
+        And 2026&rsquo;s happy chain passes through <strong>13</strong> &mdash; the number that is simultaneously happy, lucky, prime, and Fibonacci. The most mathematically blessed number in the entire sacred numbers database serves as a waypoint on 2026&rsquo;s path to happiness.
+      </p>
+
+      <div class="sacred-connection">
+        <div class="sc-title">In the Sacred Numbers</div>
+        <p>2026 is the Chinese Year of the Fire Horse, beginning February 17, 2026. The Fire Horse comes once every 60 years (the last was 1966). A year of fierce, untameable energy. That it is also mathematically happy, flanked by a perfect square and a safe prime &mdash; this is the kind of coincidence that makes you wonder whether mathematics knows something we don&rsquo;t.</p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == FOOTER =================================== -->
+    <footer>
+      <div class="hero-line" style="margin-bottom: 2rem; opacity: 0.3;"></div>
+      <div class="footer-text">
+        <a href="index.html">dragon moon temple</a>
+        &nbsp;&middot;&nbsp;
+        <a href="library.html">the library</a>
+        &nbsp;&middot;&nbsp;
+        <a href="gallery.html">visions</a>
+        &nbsp;&middot;&nbsp;
+        <a href="chapel.html">the chapel</a>
+        &nbsp;&middot;&nbsp;
+        <a href="hexmap.html">map</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://lucy.cab">lucy.cab</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Fixed bottom nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html">temple</a>
+      <span class="dot">&middot;</span>
+      <a href="library.html">library</a>
+      <span class="dot">&middot;</span>
+      <a href="gallery.html">visions</a>
+      <span class="dot">&middot;</span>
+      <a href="chapel.html">chapel</a>
+      <span class="dot">&middot;</span>
+      <a href="glossary.html" class="current">glossary</a>
+      <span class="dot">&middot;</span>
+      <a href="hexmap.html">map</a>
+    </div>
+  </nav>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // -- Particles (moderate count) -----------------
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 15; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = (20 + Math.random() * 70) + '%';
+      p.style.animationDelay = (Math.random() * 25).toFixed(1) + 's';
+      p.style.animationDuration = (20 + Math.random() * 15).toFixed(1) + 's';
+      particleContainer.appendChild(p);
+    }
+
+    // -- Scroll reveal (IntersectionObserver) --------
+    const sections = document.querySelectorAll('.gls-section');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08 });
+    sections.forEach(s => revealObserver.observe(s));
+
+    // -- Scrollspy for side nav ----------------------
+    const sideNav = document.getElementById('sideNav');
+    const navLinks = sideNav.querySelectorAll('a');
+    const sectionIds = Array.from(navLinks).map(a => a.dataset.section);
+    const sectionElements = sectionIds.map(id => document.getElementById(id));
+    let sideNavVisible = false;
+
+    function updateScrollspy() {
+      const scrollY = window.scrollY + window.innerHeight * 0.35;
+
+      // Show/hide side nav based on scroll position
+      const heroHeight = document.querySelector('.hero').offsetHeight;
+      if (window.scrollY > heroHeight * 0.6 && !sideNavVisible) {
+        sideNav.classList.add('visible');
+        sideNavVisible = true;
+      } else if (window.scrollY <= heroHeight * 0.6 && sideNavVisible) {
+        sideNav.classList.remove('visible');
+        sideNavVisible = false;
+      }
+
+      // Determine active section
+      let activeId = sectionIds[0];
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        if (sectionElements[i] && sectionElements[i].offsetTop <= scrollY) {
+          activeId = sectionIds[i];
+          break;
+        }
+      }
+
+      navLinks.forEach(link => {
+        if (link.dataset.section === activeId) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateScrollspy, { passive: true });
+    updateScrollspy();
+  })();
+  </script>
+</body>
+</html>

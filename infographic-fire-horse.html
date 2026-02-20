@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<title>Fire Horse 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    background: #050505;
+    color: #F5F0FF;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(201, 168, 76, 0.015) 2px,
+      rgba(201, 168, 76, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 99;
+    opacity: 0.5;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    padding: 48px 60px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Sacred border */
+  .sacred-border {
+    position: absolute;
+    top: 20px; left: 20px; right: 20px; bottom: 20px;
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .sacred-border::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(201, 168, 76, 0.12);
+  }
+
+  /* Corners */
+  .corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 6;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 12px; left: 12px; }
+  .corner-tr { top: 12px; right: 12px; transform: scaleX(-1); }
+  .corner-bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
+  .corner-br { bottom: 12px; right: 12px; transform: scale(-1, -1); }
+
+  /* Fire / radial glow */
+  .fire-glow {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(ellipse at center,
+      rgba(220, 100, 20, 0.08) 0%,
+      rgba(201, 168, 76, 0.03) 40%,
+      transparent 70%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Sacred geometry - I Ching / trigram-inspired pattern */
+  .sacred-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    opacity: 0.025;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .chinese-title {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 700;
+    font-size: 72px;
+    background: linear-gradient(180deg, #FF8C42 0%, #C9A84C 60%, #A07C2A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 20px rgba(220, 100, 20, 0.35));
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .title-en {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 42px;
+    letter-spacing: 6px;
+    background: linear-gradient(180deg, #E8D48B 0%, #C9A84C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 15px rgba(201, 168, 76, 0.3));
+    margin-bottom: 4px;
+  }
+
+  .title-year {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: 10px;
+    color: rgba(201, 168, 76, 0.5);
+  }
+
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    margin: 18px auto;
+  }
+
+  .divider-thin {
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.3), transparent);
+    margin: 14px auto;
+  }
+
+  /* Chinese New Year date */
+  .cny-date {
+    text-align: center;
+    margin: 5px 0 12px;
+  }
+
+  .cny-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.5);
+    margin-bottom: 6px;
+  }
+
+  .cny-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: rgba(245, 240, 255, 0.7);
+    letter-spacing: 2px;
+  }
+
+  /* Element meaning */
+  .element-section {
+    text-align: center;
+    margin: 8px 50px 12px;
+  }
+
+  .element-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 12px;
+  }
+
+  .element-item {
+    text-align: center;
+  }
+
+  .element-symbol {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .element-fire .element-symbol {
+    background: linear-gradient(180deg, #FF6B35, #C9A84C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .element-horse .element-symbol {
+    background: linear-gradient(180deg, #E8D48B, #C9A84C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .element-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: rgba(201, 168, 76, 0.6);
+  }
+
+  .element-meaning {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    color: rgba(245, 240, 255, 0.35);
+    margin-top: 2px;
+  }
+
+  .element-plus {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    color: rgba(201, 168, 76, 0.25);
+  }
+
+  .element-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: rgba(245, 240, 255, 0.5);
+    line-height: 1.5;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Cycle section */
+  .cycle-section {
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  .cycle-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.5);
+    margin-bottom: 16px;
+  }
+
+  .cycle-years {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .cycle-year {
+    text-align: center;
+  }
+
+  .cycle-num {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: rgba(245, 240, 255, 0.35);
+    letter-spacing: 2px;
+  }
+
+  .cycle-year.current .cycle-num {
+    font-size: 42px;
+    background: linear-gradient(180deg, #FF8C42, #C9A84C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 15px rgba(220, 100, 20, 0.4));
+  }
+
+  .cycle-event {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: rgba(245, 240, 255, 0.3);
+    margin-top: 4px;
+  }
+
+  .cycle-year.current .cycle-event {
+    color: rgba(201, 168, 76, 0.6);
+  }
+
+  .cycle-gap {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: rgba(201, 168, 76, 0.25);
+    letter-spacing: 1px;
+  }
+
+  /* Japan superstition */
+  .japan-section {
+    margin: 12px 50px 10px;
+    padding: 16px 25px;
+    border: 1px solid rgba(220, 100, 20, 0.15);
+    background: rgba(220, 100, 20, 0.03);
+    text-align: center;
+  }
+
+  .japan-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: rgba(220, 100, 20, 0.6);
+    margin-bottom: 8px;
+  }
+
+  .japan-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: rgba(245, 240, 255, 0.55);
+    line-height: 1.5;
+  }
+
+  .japan-text em {
+    color: rgba(220, 100, 20, 0.8);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .japan-stat {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: rgba(220, 100, 20, 0.6);
+    margin: 6px 0 2px;
+  }
+
+  .japan-stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: rgba(245, 240, 255, 0.3);
+    letter-spacing: 2px;
+  }
+
+  /* Fire Horse personality */
+  .personality-section {
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .personality-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 26px;
+    color: rgba(245, 240, 255, 0.65);
+    letter-spacing: 1px;
+    line-height: 1.4;
+  }
+
+  .personality-quote em {
+    color: #C9A84C;
+    font-style: italic;
+  }
+
+  /* Happy number badge */
+  .happy-badge {
+    text-align: center;
+    margin: 10px 0 0;
+  }
+
+  .happy-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    letter-spacing: 5px;
+    color: rgba(201, 168, 76, 0.45);
+    padding: 7px 24px;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    display: inline-block;
+    background: rgba(201, 168, 76, 0.03);
+  }
+
+  .footer {
+    margin-top: auto;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: rgba(201, 168, 76, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<!-- Fire glow effect -->
+<div class="fire-glow"></div>
+
+<!-- Sacred geometry - octagram / bagua inspired -->
+<svg class="sacred-bg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#C9A84C" fill="none" stroke-width="0.5">
+    <!-- Octagram (eight-pointed star) -->
+    <polygon points="250,50 290,210 450,210 320,300 360,460 250,370 140,460 180,300 50,210 210,210"/>
+    <!-- Inner octagon -->
+    <polygon points="250,100 355,145 400,250 355,355 250,400 145,355 100,250 145,145"/>
+    <!-- Outer circle -->
+    <circle cx="250" cy="250" r="220"/>
+    <circle cx="250" cy="250" r="180"/>
+    <circle cx="250" cy="250" r="80"/>
+    <!-- Bagua trigram lines (simplified) -->
+    <line x1="250" y1="30" x2="250" y2="470"/>
+    <line x1="30" y1="250" x2="470" y2="250"/>
+    <line x1="95" y1="95" x2="405" y2="405"/>
+    <line x1="95" y1="405" x2="405" y2="95"/>
+    <!-- Fire element triangles -->
+    <polygon points="250,120 200,220 300,220" stroke-width="0.8"/>
+    <polygon points="250,140 215,210 285,210" stroke-width="0.3"/>
+  </g>
+</svg>
+
+<div class="sacred-border"></div>
+
+<!-- Corner ornaments -->
+<div class="corner corner-tl">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,8 L8,8 L8,60 L0,60 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <path d="M0,0 L30,0 L30,3 L3,3 L3,30 L0,30 Z" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-tr">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,60 L52,60 L52,8 L0,8 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <circle cx="56" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-bl">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,8 L8,8 L8,60 L0,60 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-br">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,60 L52,60 L52,8 L0,8 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <circle cx="56" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="chinese-title">丙午</div>
+    <div class="title-en">FIRE HORSE</div>
+    <div class="title-year">2 0 2 6</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="cny-date">
+    <div class="cny-label">Chinese New Year</div>
+    <div class="cny-value">February 17, 2026</div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="element-section">
+    <div class="element-row">
+      <div class="element-item element-fire">
+        <div class="element-symbol">火</div>
+        <div class="element-name">FIRE</div>
+        <div class="element-meaning">Bing / Yang Fire</div>
+      </div>
+      <div class="element-plus">+</div>
+      <div class="element-item element-horse">
+        <div class="element-symbol">午</div>
+        <div class="element-name">HORSE</div>
+        <div class="element-meaning">Wu / 7th Branch</div>
+      </div>
+    </div>
+    <div class="element-desc">
+      Fire atop fire. The Horse's native element is already fire &mdash;<br>
+      the Heavenly Stem doubles it. Pure, uncontainable energy.
+    </div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="cycle-section">
+    <div class="cycle-label">60-Year Cycle &middot; Sexagenary Calendar</div>
+    <div class="cycle-years">
+      <div class="cycle-year">
+        <div class="cycle-num">1906</div>
+        <div class="cycle-event">San Francisco earthquake</div>
+      </div>
+      <div class="cycle-gap">60 yr</div>
+      <div class="cycle-year">
+        <div class="cycle-num">1966</div>
+        <div class="cycle-event">Cultural Revolution begins</div>
+      </div>
+      <div class="cycle-gap">60 yr</div>
+      <div class="cycle-year current">
+        <div class="cycle-num">2026</div>
+        <div class="cycle-event">Year of the Fire Horse</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="japan-section">
+    <div class="japan-title">HINOEUMA &middot; THE JAPANESE SUPERSTITION</div>
+    <div class="japan-text">
+      In 1966 Japan, the <em>Hinoeuma</em> superstition held that girls born<br>
+      in Fire Horse years would be headstrong and unmarriageable.
+    </div>
+    <div class="japan-stat">-25%</div>
+    <div class="japan-stat-label">DROP IN BIRTH RATE &middot; JAPAN &middot; 1966</div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="personality-section">
+    <div class="personality-quote">
+      "Fire Horse people: <em>passionate</em>,<br>
+      <em>free-spirited</em>, <em>untameable</em>."
+    </div>
+  </div>
+
+  <div class="happy-badge">
+    <div class="happy-text">2026 IS ALSO A HAPPY NUMBER</div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">dmt.lucy.cab</div>
+  </div>
+
+</div>
+
+</body>
+</html>

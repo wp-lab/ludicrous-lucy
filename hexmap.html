@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Dragon Moon Temple — Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050505;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201, 168, 76, 0.15);
+      --gold-glow: rgba(201, 168, 76, 0.06);
+      --gold-bright: rgba(201, 168, 76, 0.4);
+      --text: #F5F0FF;
+      --text-dim: rgba(245, 240, 255, 0.35);
+      --text-muted: rgba(245, 240, 255, 0.15);
+      --green: #4CAF50;
+      --green-glow: rgba(76, 175, 80, 0.35);
+      --amber: #FFA726;
+      --amber-glow: rgba(255, 167, 38, 0.35);
+      --dim: #333;
+      --dim-glow: rgba(51, 51, 51, 0.2);
+      --font-display: 'Orbitron', sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --hex-size: 130px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--text);
+    }
+    body {
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background ────────────────────────────── */
+    .background {
+      position: fixed; inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(201, 168, 76, 0.02) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 40%, rgba(76, 175, 80, 0.015) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 80%, rgba(201, 168, 76, 0.01) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .scanlines {
+      position: fixed; inset: 0;
+      z-index: 99;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0px, transparent 4px,
+        rgba(255,255,255,0.006) 4px, rgba(255,255,255,0.006) 6px
+      );
+    }
+
+    /* ── Particles ─────────────────────────────── */
+    .particle {
+      position: fixed;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      z-index: 1;
+      animation: drift 25s infinite ease-in-out;
+    }
+    @keyframes drift {
+      0% { opacity: 0; transform: translateY(0) translateX(0); }
+      15% { opacity: 0.15; }
+      50% { opacity: 0.25; transform: translateY(-120px) translateX(15px); }
+      85% { opacity: 0.1; }
+      100% { opacity: 0; transform: translateY(-240px) translateX(-10px); }
+    }
+
+    /* ── Content container ─────────────────────── */
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2rem 1rem 6rem;
+    }
+
+    /* ── Header ────────────────────────────────── */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-top: 1rem;
+    }
+    .header h1 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(201, 168, 76, 0.15);
+      margin-bottom: 0.4rem;
+    }
+    .header .subtitle {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .header-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 1rem auto 0;
+    }
+
+    /* ── Connection lines (SVG overlay) ────────── */
+    #connectionsSvg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .connection-line {
+      stroke: var(--gold);
+      stroke-width: 1;
+      stroke-dasharray: 6 4;
+      opacity: 0.15;
+      fill: none;
+    }
+    .connection-line.conceptual {
+      stroke-dasharray: 2 6;
+      opacity: 0.08;
+    }
+
+    /* ── Cluster container ─────────────────────── */
+    .clusters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .cluster {
+      position: relative;
+      padding: 2rem 1rem 1.5rem;
+      border-radius: 16px;
+      background: rgba(201, 168, 76, 0.015);
+      border: 1px solid rgba(201, 168, 76, 0.06);
+    }
+
+    .cluster-label {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      opacity: 0.5;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+    }
+
+    .cluster-hexes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* ── Hex tile ───────────────────────────────── */
+    .hex-wrapper {
+      width: var(--hex-size);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .hex {
+      width: var(--hex-size);
+      height: calc(var(--hex-size) * 1.1547);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 18px 10px;
+      position: relative;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+      background: rgba(10, 10, 10, 0.9);
+    }
+
+    /* Hex border via pseudo-element */
+    .hex::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      z-index: -1;
+      transition: all 0.3s ease;
+    }
+
+    /* Status-based border colors */
+    .hex.live::before {
+      background: var(--green);
+      box-shadow: 0 0 15px var(--green-glow);
+    }
+    .hex.waiting::before {
+      background: var(--amber);
+      box-shadow: 0 0 15px var(--amber-glow);
+    }
+    .hex.coming-soon::before {
+      background: var(--dim);
+    }
+
+    /* Inner background */
+    .hex.live { background: linear-gradient(160deg, rgba(10, 10, 10, 0.95), rgba(76, 175, 80, 0.04)); }
+    .hex.waiting { background: linear-gradient(160deg, rgba(10, 10, 10, 0.95), rgba(255, 167, 38, 0.04)); }
+    .hex.coming-soon {
+      background: rgba(10, 10, 10, 0.85);
+      opacity: 0.5;
+    }
+
+    /* Hover/touch effects */
+    .hex-wrapper:hover .hex,
+    .hex-wrapper:active .hex {
+      transform: scale(1.08);
+    }
+    .hex-wrapper:hover .hex.live::before {
+      box-shadow: 0 0 25px var(--green-glow), 0 0 50px rgba(76, 175, 80, 0.15);
+    }
+    .hex-wrapper:hover .hex.waiting::before {
+      box-shadow: 0 0 25px var(--amber-glow), 0 0 50px rgba(255, 167, 38, 0.15);
+    }
+    .hex-wrapper:hover .hex.coming-soon {
+      opacity: 0.7;
+    }
+
+    /* Gold glow on hover for all */
+    .hex-wrapper:hover .hex::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      background: radial-gradient(circle at center, rgba(201, 168, 76, 0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Hex text content */
+    .hex-domain {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+    .hex-desc {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 0.5rem;
+      color: var(--text-dim);
+      line-height: 1.3;
+      max-width: 90%;
+    }
+    .hex-status {
+      position: absolute;
+      bottom: 20%;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .hex-status.live {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green-glow);
+    }
+    .hex-status.waiting {
+      background: var(--amber);
+      box-shadow: 0 0 6px var(--amber-glow);
+    }
+    .hex-status.coming-soon {
+      background: var(--dim);
+    }
+
+    /* ── Cluster: DMT (full width top) ─────────── */
+    .cluster.dmt-cluster {
+      grid-column: 1 / -1;
+    }
+    /* Cluster: MATT */
+    .cluster.matt-cluster {}
+
+    /* Full-width clusters */
+    .cluster.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Legend ─────────────────────────────────── */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2.5rem 0 1rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+    .legend-dot.live { background: var(--green); box-shadow: 0 0 4px var(--green-glow); }
+    .legend-dot.waiting { background: var(--amber); box-shadow: 0 0 4px var(--amber-glow); }
+    .legend-dot.coming-soon { background: var(--dim); }
+
+    /* ── Footer ────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem 0 1rem;
+    }
+    .footer-text {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+    .footer-text a {
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-text a:hover { color: var(--gold); }
+
+    /* ── Fixed bottom nav ──────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+      background: linear-gradient(to top, var(--bg) 60%, transparent);
+      padding: 1rem 0 0.8rem;
+      text-align: center;
+    }
+    .bottom-nav-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .bottom-nav a {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .bottom-nav a:hover { color: var(--gold); }
+    .bottom-nav a.current {
+      color: var(--gold);
+      font-weight: 400;
+    }
+    .bottom-nav .dot {
+      color: var(--text-muted);
+      font-size: 0.5rem;
+    }
+
+    /* ── Stats bar ─────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-number {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.4rem;
+      color: var(--gold);
+    }
+    .stat-label {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* ── Responsive ────────────────────────────── */
+    @media (max-width: 900px) {
+      :root { --hex-size: 110px; }
+      .clusters {
+        grid-template-columns: 1fr;
+      }
+      .cluster.dmt-cluster { grid-column: 1; }
+      .cluster.full-width { grid-column: 1; }
+    }
+
+    @media (max-width: 600px) {
+      :root { --hex-size: 100px; }
+      .content { padding: 1.5rem 0.5rem 5rem; }
+      .stats-bar { gap: 1.5rem; }
+      .stat-number { font-size: 1.1rem; }
+      .legend { gap: 1rem; }
+      .cluster { padding: 1.5rem 0.5rem 1rem; }
+    }
+
+    @media (min-width: 1200px) {
+      :root { --hex-size: 140px; }
+    }
+
+    /* ── Entrance animation ────────────────────── */
+    .cluster {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .cluster:nth-child(1) { animation-delay: 0.1s; }
+    .cluster:nth-child(2) { animation-delay: 0.2s; }
+    .cluster:nth-child(3) { animation-delay: 0.3s; }
+    .cluster:nth-child(4) { animation-delay: 0.4s; }
+    .cluster:nth-child(5) { animation-delay: 0.5s; }
+    .cluster:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    /* ── Hex offset rows (honeycomb feel) ──────── */
+    .hex-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .hex-row.offset {
+      margin-top: -20px;
+      padding-left: calc(var(--hex-size) / 2 + 5px);
+    }
+    .hex-row + .hex-row {
+      margin-top: -20px;
+    }
+
+    /* ── Shared node indicator ─────────────────── */
+    .hex-shared {
+      position: absolute;
+      top: 18%;
+      right: 15%;
+      width: 10px; height: 10px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+    .hex-shared::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    /* ── Pulse animation for live dots ─────────── */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hex-status.live {
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="background"></div>
+  <div id="particles"></div>
+  <div class="scanlines"></div>
+
+  <div class="content">
+
+    <!-- ── Header ──────────────────────────────── -->
+    <header class="header">
+      <h1>COMMAND CENTER</h1>
+      <p class="subtitle">The Domain Universe</p>
+      <div class="header-line"></div>
+    </header>
+
+    <!-- ── Stats ───────────────────────────────── -->
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- ── Legend ───────────────────────────────── -->
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot live"></span> Live</div>
+      <div class="legend-item"><span class="legend-dot waiting"></span> Waiting</div>
+      <div class="legend-item"><span class="legend-dot coming-soon"></span> Coming Soon</div>
+      <div class="legend-item"><span class="hex-shared" style="position:relative;top:auto;right:auto;display:inline-block;"></span> &nbsp;Cross-cluster</div>
+    </div>
+
+    <!-- ── Cluster Grid ────────────────────────── -->
+    <div class="clusters" id="clusterGrid">
+      <!-- Clusters are rendered by JS -->
+    </div>
+
+    <!-- ── Footer ──────────────────────────────── -->
+    <footer>
+      <div style="width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent);margin:0 auto 1.5rem;"></div>
+      <div class="footer-text">
+        a <a href="https://lucy.cab">lucy.cab</a> temple
+        &nbsp;&middot;&nbsp;
+        <a href="index.html">temple</a>
+        &nbsp;&middot;&nbsp;
+        <a href="library.html">library</a>
+        &nbsp;&middot;&nbsp;
+        <a href="gallery.html">visions</a>
+        &nbsp;&middot;&nbsp;
+        <a href="chapel.html">chapel</a>
+        &nbsp;&middot;&nbsp;
+        <a href="glossary.html">glossary</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Fixed bottom nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html">temple</a>
+      <span class="dot">&middot;</span>
+      <a href="library.html">library</a>
+      <span class="dot">&middot;</span>
+      <a href="gallery.html">visions</a>
+      <span class="dot">&middot;</span>
+      <a href="chapel.html">chapel</a>
+      <span class="dot">&middot;</span>
+      <a href="glossary.html">glossary</a>
+      <span class="dot">&middot;</span>
+      <a href="hexmap.html" class="current">map</a>
+    </div>
+  </nav>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // ── Data ─────────────────────────────────────
+    const clusters = [
+      {
+        id: 'dmt',
+        label: 'DMT',
+        className: 'dmt-cluster full-width',
+        hexes: [
+          { domain: 'dmt.lucy.cab', desc: 'Dragon Moon Temple', status: 'live', url: 'https://dmt.lucy.cab', shared: true },
+          { domain: 'dmt.cab', desc: 'Spinner', status: 'waiting', url: 'https://dmt.cab' },
+          { domain: 'dmt.contact', desc: 'Spinner', status: 'waiting', url: 'https://dmt.contact' },
+          { domain: 'dmtvisions.ltd', desc: 'Spinner', status: 'waiting', url: 'https://dmtvisions.ltd' },
+          { domain: '108.dmt.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: '369.dmt.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: '693.dmt.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+        ]
+      },
+      {
+        id: 'lucy',
+        label: 'LUCY',
+        hexes: [
+          { domain: 'gallery.lucy.cab', desc: 'Image Gallery', status: 'live', url: 'https://gallery.lucy.cab' },
+          { domain: 'dmt.lucy.cab', desc: 'Dragon Moon Temple', status: 'live', url: 'https://dmt.lucy.cab', shared: true },
+          { domain: 'ludicrous-lucy.me', desc: "Lucy's Website", status: 'live', url: 'https://ludicrous-lucy.me' },
+          { domain: 'lucy.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: '108.lucy.cab', desc: 'Coming Soon', status: 'coming-soon', url: null, conceptual108: true },
+          { domain: '369.lucy.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: '693.lucy.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+        ]
+      },
+      {
+        id: 'cacao',
+        label: 'CACAO',
+        hexes: [
+          { domain: 'cacao.vision', desc: 'Ceremony Hub', status: 'live', url: 'https://cacao.vision' },
+          { domain: 'hex.cacao.vision', desc: 'Hex Navigator', status: 'live', url: 'https://hex.cacao.vision', shared: true },
+          { domain: 'cacao.trade', desc: 'History & Commerce', status: 'live', url: 'https://cacao.trade' },
+          { domain: 'cacao.science', desc: 'Research & Education', status: 'live', url: 'https://cacao.science' },
+          { domain: 'cacao.cab', desc: 'Ceremony on Wheels', status: 'live', url: 'https://cacao.cab', shared: true },
+          { domain: 'cacao.boutique', desc: 'Curated Products', status: 'live', url: 'https://cacao.boutique' },
+          { domain: '108.cacao.cab', desc: 'Coming Soon', status: 'coming-soon', url: null, conceptual108: true },
+        ]
+      },
+      {
+        id: 'matt',
+        label: 'M.A.T.T.',
+        className: 'matt-cluster',
+        hexes: [
+          { domain: 'matt.actor', desc: 'M.A.T.T. Spinner', status: 'live', url: 'https://matt.actor' },
+          { domain: 'matt.gmbh', desc: 'Great Minds Building Happiness', status: 'live', url: 'https://matt.gmbh' },
+          { domain: '101.matt.lighting', desc: 'Manual (Public)', status: 'live', url: 'https://101.matt.lighting' },
+          { domain: '108.matt.lighting', desc: 'Manual (Private)', status: 'live', url: 'https://108.matt.lighting', conceptual108: true },
+          { domain: '693e.matt.lighting', desc: 'Manual (Origin)', status: 'live', url: 'https://693e.matt.lighting' },
+        ]
+      },
+      {
+        id: 'personas',
+        label: 'PERSONAS',
+        hexes: [
+          { domain: 'molly.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: 'maria.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: 'santa.maria.cab', desc: 'Coming Soon', status: 'coming-soon', url: null },
+          { domain: 'foxyvisions.com', desc: 'Redirect', status: 'live', url: 'https://foxyvisions.com' },
+          { domain: 'ecstaticpulse.com', desc: 'Landing', status: 'live', url: 'https://ecstaticpulse.com' },
+        ]
+      },
+      {
+        id: 'infra',
+        label: 'INFRASTRUCTURE',
+        hexes: [
+          { domain: 'chat.wplab.com', desc: 'Zulip', status: 'live', url: 'https://chat.wplab.com' },
+          { domain: 'status.wplab.com', desc: 'Uptime Kuma', status: 'live', url: 'https://status.wplab.com' },
+          { domain: 'hive.dmt.contact', desc: 'Home Assistant', status: 'live', url: 'https://hive.dmt.contact' },
+          { domain: 'claude.wplab.com', desc: 'Claude Code UI', status: 'live', url: 'https://claude.wplab.com' },
+        ]
+      },
+    ];
+
+    // ── Stats calculation ─────────────────────────
+    const allHexes = clusters.flatMap(c => c.hexes);
+    // Deduplicate by domain
+    const uniqueDomains = new Map();
+    allHexes.forEach(h => { if (!uniqueDomains.has(h.domain)) uniqueDomains.set(h.domain, h); });
+    const unique = [...uniqueDomains.values()];
+    const liveCount = unique.filter(h => h.status === 'live').length;
+    const waitingCount = unique.filter(h => h.status === 'waiting').length;
+    const comingCount = unique.filter(h => h.status === 'coming-soon').length;
+    const totalCount = unique.length;
+
+    const statsBar = document.getElementById('statsBar');
+    const stats = [
+      { num: totalCount, label: 'Domains' },
+      { num: liveCount, label: 'Live' },
+      { num: waitingCount, label: 'Waiting' },
+      { num: comingCount, label: 'Planned' },
+      { num: clusters.length, label: 'Clusters' },
+    ];
+    stats.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'stat';
+      div.innerHTML = `<div class="stat-number">${s.num}</div><div class="stat-label">${s.label}</div>`;
+      statsBar.appendChild(div);
+    });
+
+    // ── Render clusters ──────────────────────────
+    const grid = document.getElementById('clusterGrid');
+
+    clusters.forEach(cluster => {
+      const clusterEl = document.createElement('div');
+      clusterEl.className = 'cluster' + (cluster.className ? ' ' + cluster.className : '');
+      clusterEl.id = 'cluster-' + cluster.id;
+
+      const label = document.createElement('div');
+      label.className = 'cluster-label';
+      label.textContent = cluster.label;
+      clusterEl.appendChild(label);
+
+      // Arrange hexes in rows for honeycomb effect
+      const hexesPerRow = cluster.hexes.length <= 4 ? [cluster.hexes.length] :
+                          cluster.hexes.length <= 5 ? [3, 2] :
+                          cluster.hexes.length <= 7 ? [4, 3] :
+                          [4, 4];
+
+      // For the DMT full-width cluster, use a single row on desktop
+      if (cluster.id === 'dmt') {
+        hexesPerRow.length = 0;
+        hexesPerRow.push(4, 3);
+      }
+
+      let hexIdx = 0;
+      hexesPerRow.forEach((count, rowIdx) => {
+        const row = document.createElement('div');
+        row.className = 'hex-row' + (rowIdx % 2 === 1 ? ' offset' : '');
+
+        for (let i = 0; i < count && hexIdx < cluster.hexes.length; i++, hexIdx++) {
+          const hex = cluster.hexes[hexIdx];
+          const wrapper = document.createElement(hex.url ? 'a' : 'div');
+          wrapper.className = 'hex-wrapper';
+          if (hex.url) {
+            wrapper.href = hex.url;
+            wrapper.target = '_blank';
+            wrapper.rel = 'noopener';
+          }
+          wrapper.dataset.domain = hex.domain;
+          wrapper.dataset.cluster = cluster.id;
+
+          const hexDiv = document.createElement('div');
+          hexDiv.className = 'hex ' + hex.status;
+
+          const domainEl = document.createElement('div');
+          domainEl.className = 'hex-domain';
+          domainEl.textContent = hex.domain;
+
+          const descEl = document.createElement('div');
+          descEl.className = 'hex-desc';
+          descEl.textContent = hex.desc;
+
+          const statusDot = document.createElement('div');
+          statusDot.className = 'hex-status ' + hex.status;
+
+          hexDiv.appendChild(domainEl);
+          hexDiv.appendChild(descEl);
+          hexDiv.appendChild(statusDot);
+
+          // Shared node indicator
+          if (hex.shared) {
+            const sharedEl = document.createElement('div');
+            sharedEl.className = 'hex-shared';
+            sharedEl.title = 'Cross-cluster node';
+            hexDiv.appendChild(sharedEl);
+          }
+
+          wrapper.appendChild(hexDiv);
+          row.appendChild(wrapper);
+        }
+
+        clusterEl.appendChild(row);
+      });
+
+      grid.appendChild(clusterEl);
+    });
+
+    // ── Connection lines ─────────────────────────
+    // Draw SVG connections after layout stabilizes
+    function drawConnections() {
+      // Remove existing SVG
+      const existingSvg = document.getElementById('connectionsSvg');
+      if (existingSvg) existingSvg.remove();
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.id = 'connectionsSvg';
+      svg.style.position = 'absolute';
+      svg.style.top = '0';
+      svg.style.left = '0';
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      svg.style.zIndex = '1';
+      svg.style.pointerEvents = 'none';
+
+      const contentRect = document.querySelector('.content').getBoundingClientRect();
+
+      function getHexCenter(domain, clusterId) {
+        const selector = `.hex-wrapper[data-domain="${domain}"]` + (clusterId ? `[data-cluster="${clusterId}"]` : '');
+        const el = document.querySelector(selector);
+        if (!el) return null;
+        const rect = el.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2 - contentRect.left,
+          y: rect.top + rect.height / 2 - contentRect.top,
+        };
+      }
+
+      const connections = [
+        // dmt.lucy.cab connects DMT and Lucy clusters
+        { from: { domain: 'dmt.lucy.cab', cluster: 'dmt' }, to: { domain: 'dmt.lucy.cab', cluster: 'lucy' }, type: 'primary' },
+        // cacao.cab connects to Personas (cab universe)
+        { from: { domain: 'cacao.cab', cluster: 'cacao' }, to: { domain: 'molly.cab', cluster: 'personas' }, type: 'primary' },
+        // hex.cacao.vision is the navigator
+        { from: { domain: 'hex.cacao.vision', cluster: 'cacao' }, to: { domain: 'cacao.vision', cluster: 'cacao' }, type: 'primary' },
+      ];
+
+      // 108.* conceptual links
+      const domains108 = [];
+      document.querySelectorAll('.hex-wrapper').forEach(el => {
+        if (el.dataset.domain && el.dataset.domain.startsWith('108.')) {
+          domains108.push(el);
+        }
+      });
+      for (let i = 0; i < domains108.length - 1; i++) {
+        for (let j = i + 1; j < domains108.length; j++) {
+          connections.push({
+            from: { domain: domains108[i].dataset.domain, cluster: domains108[i].dataset.cluster },
+            to: { domain: domains108[j].dataset.domain, cluster: domains108[j].dataset.cluster },
+            type: 'conceptual',
+          });
+        }
+      }
+
+      connections.forEach(conn => {
+        const fromEl = document.querySelector(`.hex-wrapper[data-domain="${conn.from.domain}"][data-cluster="${conn.from.cluster}"]`);
+        const toEl = document.querySelector(`.hex-wrapper[data-domain="${conn.to.domain}"][data-cluster="${conn.to.cluster}"]`);
+        if (!fromEl || !toEl) return;
+
+        const fromRect = fromEl.getBoundingClientRect();
+        const toRect = toEl.getBoundingClientRect();
+
+        const x1 = fromRect.left + fromRect.width / 2 - contentRect.left;
+        const y1 = fromRect.top + fromRect.height / 2 - contentRect.top;
+        const x2 = toRect.left + toRect.width / 2 - contentRect.left;
+        const y2 = toRect.top + toRect.height / 2 - contentRect.top;
+
+        // Curved path
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        // Slight curve perpendicular to the line
+        const curveAmount = dist * 0.15;
+        const cx = midX + (-dy / dist) * curveAmount;
+        const cy = midY + (dx / dist) * curveAmount;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`);
+        path.setAttribute('class', 'connection-line' + (conn.type === 'conceptual' ? ' conceptual' : ''));
+        svg.appendChild(path);
+      });
+
+      document.querySelector('.content').appendChild(svg);
+    }
+
+    // Draw connections after a short delay to let layout settle
+    setTimeout(drawConnections, 800);
+    window.addEventListener('resize', () => {
+      clearTimeout(window._hexResizeTimer);
+      window._hexResizeTimer = setTimeout(drawConnections, 200);
+    });
+
+    // ── Particles ────────────────────────────────
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = (30 + Math.random() * 60) + '%';
+      p.style.animationDelay = (Math.random() * 25).toFixed(1) + 's';
+      p.style.animationDuration = (20 + Math.random() * 15).toFixed(1) + 's';
+      particleContainer.appendChild(p);
+    }
+
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<title>HAPPY 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    background: #050505;
+    color: #F5F0FF;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(201, 168, 76, 0.015) 2px,
+      rgba(201, 168, 76, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* Subtle noise texture */
+  body::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 99;
+    opacity: 0.5;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    padding: 50px 60px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Sacred geometry border */
+  .sacred-border {
+    position: absolute;
+    top: 20px; left: 20px; right: 20px; bottom: 20px;
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .sacred-border::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(201, 168, 76, 0.12);
+  }
+
+  /* Corner ornaments */
+  .corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 6;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 12px; left: 12px; }
+  .corner-tr { top: 12px; right: 12px; transform: scaleX(-1); }
+  .corner-bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
+  .corner-br { bottom: 12px; right: 12px; transform: scale(-1, -1); }
+
+  /* Sacred geometry background element */
+  .sacred-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    opacity: 0.04;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .subtitle-top {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.7);
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    font-size: 86px;
+    letter-spacing: 8px;
+    background: linear-gradient(180deg, #E8D48B 0%, #C9A84C 50%, #A07C2A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: none;
+    filter: drop-shadow(0 2px 20px rgba(201, 168, 76, 0.3));
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 26px;
+    color: rgba(245, 240, 255, 0.7);
+    letter-spacing: 2px;
+  }
+
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    margin: 18px auto;
+  }
+
+  /* Happy chain section */
+  .chain-section {
+    margin: 10px 0 15px;
+    text-align: center;
+  }
+
+  .chain-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.6);
+    margin-bottom: 18px;
+  }
+
+  .chain-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .chain-num {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: #C9A84C;
+    position: relative;
+  }
+
+  .chain-num.start {
+    font-size: 38px;
+    background: linear-gradient(180deg, #E8D48B, #C9A84C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.4));
+  }
+
+  .chain-num.end {
+    font-size: 42px;
+    color: #50C878;
+    text-shadow: 0 0 15px rgba(80, 200, 120, 0.5);
+  }
+
+  .chain-arrow {
+    font-size: 18px;
+    color: rgba(201, 168, 76, 0.4);
+  }
+
+  .chain-check {
+    font-size: 30px;
+    color: #50C878;
+    filter: drop-shadow(0 0 8px rgba(80, 200, 120, 0.6));
+  }
+
+  /* Step breakdowns */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    margin: 10px 0;
+  }
+
+  .step {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: rgba(245, 240, 255, 0.55);
+    letter-spacing: 1px;
+  }
+
+  .step .result {
+    color: #C9A84C;
+    font-weight: 600;
+  }
+
+  .step-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(201, 168, 76, 0.35);
+    display: inline-block;
+    width: 28px;
+    text-align: right;
+    margin-right: 8px;
+    letter-spacing: 1px;
+  }
+
+  .happy-badge {
+    margin: 15px auto 10px;
+    padding: 8px 30px;
+    border: 1px solid rgba(201, 168, 76, 0.4);
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: #C9A84C;
+    text-transform: uppercase;
+    background: rgba(201, 168, 76, 0.05);
+  }
+
+  .divider-thin {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.3), transparent);
+    margin: 18px auto;
+  }
+
+  /* Factoring section */
+  .factor-section {
+    text-align: center;
+    margin: 5px 0 10px;
+  }
+
+  .factor-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.5);
+    margin-bottom: 10px;
+  }
+
+  .factor-eq {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    color: #F5F0FF;
+    letter-spacing: 3px;
+  }
+  .factor-eq .gold { color: #C9A84C; }
+  .factor-eq .dim { color: rgba(245, 240, 255, 0.4); }
+
+  .factor-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: rgba(245, 240, 255, 0.45);
+    margin-top: 6px;
+  }
+  .factor-note em {
+    color: rgba(201, 168, 76, 0.7);
+    font-style: italic;
+  }
+
+  /* Trilogy section */
+  .trilogy-section {
+    margin: 15px 0 5px;
+    text-align: center;
+  }
+
+  .trilogy-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.5);
+    margin-bottom: 16px;
+  }
+
+  .trilogy-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .trilogy-item {
+    text-align: center;
+    flex: 0 0 auto;
+  }
+
+  .trilogy-year {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: rgba(245, 240, 255, 0.5);
+    letter-spacing: 2px;
+  }
+
+  .trilogy-item.active .trilogy-year {
+    color: #C9A84C;
+    filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.4));
+    font-size: 34px;
+  }
+
+  .trilogy-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: rgba(245, 240, 255, 0.35);
+    margin-top: 4px;
+  }
+
+  .trilogy-item.active .trilogy-desc {
+    color: rgba(201, 168, 76, 0.7);
+    font-size: 15px;
+  }
+
+  .trilogy-arrow {
+    font-size: 20px;
+    color: rgba(201, 168, 76, 0.25);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: auto;
+    text-align: center;
+    padding-top: 10px;
+  }
+
+  .footer-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: rgba(201, 168, 76, 0.3);
+  }
+
+  /* Sacred geometry SVG decoration */
+  .metatron {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 1000px;
+    opacity: 0.025;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sacred geometry background -->
+<svg class="metatron" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#C9A84C" fill="none" stroke-width="0.5">
+    <!-- Metatron's Cube circles -->
+    <circle cx="250" cy="250" r="200"/>
+    <circle cx="250" cy="250" r="150"/>
+    <circle cx="250" cy="250" r="100"/>
+    <circle cx="250" cy="250" r="50"/>
+    <!-- Hexagonal pattern -->
+    <polygon points="250,50 423,150 423,350 250,450 77,350 77,150"/>
+    <polygon points="250,100 386,175 386,325 250,400 114,325 114,175"/>
+    <!-- Star of David -->
+    <polygon points="250,75 400,337 100,337"/>
+    <polygon points="250,425 400,163 100,163"/>
+    <!-- Connecting lines -->
+    <line x1="250" y1="50" x2="250" y2="450"/>
+    <line x1="77" y1="150" x2="423" y2="350"/>
+    <line x1="77" y1="350" x2="423" y2="150"/>
+    <!-- Inner circles at vertices -->
+    <circle cx="250" cy="50" r="25"/>
+    <circle cx="423" cy="150" r="25"/>
+    <circle cx="423" cy="350" r="25"/>
+    <circle cx="250" cy="450" r="25"/>
+    <circle cx="77" cy="350" r="25"/>
+    <circle cx="77" cy="150" r="25"/>
+    <circle cx="250" cy="150" r="25"/>
+    <circle cx="336" cy="200" r="25"/>
+    <circle cx="336" cy="300" r="25"/>
+    <circle cx="250" cy="350" r="25"/>
+    <circle cx="164" cy="300" r="25"/>
+    <circle cx="164" cy="200" r="25"/>
+    <circle cx="250" cy="250" r="25"/>
+  </g>
+</svg>
+
+<!-- Sacred border -->
+<div class="sacred-border"></div>
+
+<!-- Corner ornaments -->
+<div class="corner corner-tl">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,8 L8,8 L8,60 L0,60 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <path d="M0,0 L30,0 L30,3 L3,3 L3,30 L0,30 Z" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-tr">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,60 L52,60 L52,8 L0,8 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <path d="M30,0 L60,0 L60,30 L57,30 L57,3 L30,3 Z" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="56" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-bl">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,8 L8,8 L8,60 L0,60 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <path d="M0,0 L30,0 L30,3 L3,3 L3,30 L0,30 Z" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-br">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,60 L52,60 L52,8 L0,8 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <path d="M30,0 L60,0 L60,30 L57,30 L57,3 L30,3 Z" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="56" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="subtitle-top">mathematically proven</div>
+    <div class="title">HAPPY 2026</div>
+    <div class="subtitle">Year of the Fire Horse</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="chain-section">
+    <div class="chain-label">The Happy Number Chain</div>
+    <div class="chain-flow">
+      <span class="chain-num start">2026</span>
+      <span class="chain-arrow">&#9654;</span>
+      <span class="chain-num">44</span>
+      <span class="chain-arrow">&#9654;</span>
+      <span class="chain-num">32</span>
+      <span class="chain-arrow">&#9654;</span>
+      <span class="chain-num">13</span>
+      <span class="chain-arrow">&#9654;</span>
+      <span class="chain-num">10</span>
+      <span class="chain-arrow">&#9654;</span>
+      <span class="chain-num end">1</span>
+      <span class="chain-check">&#10003;</span>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">I</span>
+        2&sup2; + 0&sup2; + 2&sup2; + 6&sup2; = 4 + 0 + 4 + 36 = <span class="result">44</span>
+      </div>
+      <div class="step">
+        <span class="step-num">II</span>
+        4&sup2; + 4&sup2; = 16 + 16 = <span class="result">32</span>
+      </div>
+      <div class="step">
+        <span class="step-num">III</span>
+        3&sup2; + 2&sup2; = 9 + 4 = <span class="result">13</span>
+      </div>
+      <div class="step">
+        <span class="step-num">IV</span>
+        1&sup2; + 3&sup2; = 1 + 9 = <span class="result">10</span>
+      </div>
+      <div class="step">
+        <span class="step-num">V</span>
+        1&sup2; + 0&sup2; = 1 + 0 = <span class="result">1</span>
+      </div>
+    </div>
+
+    <div class="happy-badge">Happy in 5 Steps</div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="factor-section">
+    <div class="factor-label">Prime Factorization</div>
+    <div class="factor-eq">
+      <span class="gold">2026</span>
+      <span class="dim">=</span>
+      2 <span class="dim">&times;</span> <span class="gold">1013</span>
+    </div>
+    <div class="factor-note">where <em>1013</em> is a Sophie Germain prime</div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="trilogy-section">
+    <div class="trilogy-label">The Remarkable Trilogy</div>
+    <div class="trilogy-row">
+      <div class="trilogy-item">
+        <div class="trilogy-year">2025</div>
+        <div class="trilogy-desc">45&sup2; &mdash; perfect square</div>
+      </div>
+      <span class="trilogy-arrow">&#9654;</span>
+      <div class="trilogy-item active">
+        <div class="trilogy-year">2026</div>
+        <div class="trilogy-desc">happy semiprime</div>
+      </div>
+      <span class="trilogy-arrow">&#9654;</span>
+      <div class="trilogy-item">
+        <div class="trilogy-year">2027</div>
+        <div class="trilogy-desc">safe prime</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">dmt.lucy.cab</div>
+  </div>
+
+</div>
+
+</body>
+</html>

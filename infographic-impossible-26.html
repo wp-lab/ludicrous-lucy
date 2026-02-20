@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<title>26 — The Impossible Sandwich</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    background: #050505;
+    color: #F5F0FF;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(201, 168, 76, 0.015) 2px,
+      rgba(201, 168, 76, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 99;
+    opacity: 0.5;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    padding: 50px 60px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Sacred border */
+  .sacred-border {
+    position: absolute;
+    top: 20px; left: 20px; right: 20px; bottom: 20px;
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .sacred-border::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(201, 168, 76, 0.12);
+  }
+
+  /* Corner ornaments */
+  .corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 6;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 12px; left: 12px; }
+  .corner-tr { top: 12px; right: 12px; transform: scaleX(-1); }
+  .corner-bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
+  .corner-br { bottom: 12px; right: 12px; transform: scale(-1, -1); }
+
+  /* Flower of Life background */
+  .sacred-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    height: 1100px;
+    opacity: 0.025;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .title-number {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 160px;
+    background: linear-gradient(180deg, #E8D48B 0%, #C9A84C 50%, #A07C2A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    filter: drop-shadow(0 2px 30px rgba(201, 168, 76, 0.35));
+    margin-bottom: 0;
+  }
+
+  .title-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 30px;
+    color: rgba(245, 240, 255, 0.6);
+    letter-spacing: 3px;
+    margin-top: -5px;
+  }
+
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    margin: 22px auto;
+  }
+
+  .divider-thin {
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.3), transparent);
+    margin: 16px auto;
+  }
+
+  /* Sandwich visualization */
+  .sandwich {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 10px 0 20px;
+  }
+
+  .sandwich-item {
+    text-align: center;
+    padding: 0 30px;
+  }
+
+  .sandwich-num {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 1;
+  }
+
+  .sandwich-item.left .sandwich-num {
+    color: rgba(245, 240, 255, 0.35);
+  }
+  .sandwich-item.center .sandwich-num {
+    font-size: 80px;
+    background: linear-gradient(180deg, #E8D48B, #C9A84C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(201, 168, 76, 0.5));
+  }
+  .sandwich-item.right .sandwich-num {
+    color: rgba(245, 240, 255, 0.35);
+  }
+
+  .sandwich-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: rgba(245, 240, 255, 0.35);
+    margin-top: 6px;
+  }
+  .sandwich-item.center .sandwich-label {
+    color: rgba(201, 168, 76, 0.7);
+    font-style: italic;
+  }
+
+  .sandwich-dash {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 30px;
+    color: rgba(201, 168, 76, 0.2);
+    padding: 0 5px;
+    margin-bottom: 20px;
+  }
+
+  .theorem-box {
+    text-align: center;
+    margin: 5px 40px 15px;
+    padding: 18px 30px;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    background: rgba(201, 168, 76, 0.03);
+  }
+
+  .theorem-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: rgba(245, 240, 255, 0.75);
+    line-height: 1.5;
+  }
+  .theorem-text em {
+    color: #C9A84C;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .theorem-cite {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(201, 168, 76, 0.4);
+    margin-top: 8px;
+  }
+
+  /* Properties grid */
+  .properties {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 10px 30px;
+  }
+
+  .property {
+    padding: 16px 20px;
+    border-left: 2px solid rgba(201, 168, 76, 0.25);
+    background: linear-gradient(90deg, rgba(201, 168, 76, 0.03), transparent);
+  }
+
+  .property-value {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #C9A84C;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .property-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: rgba(245, 240, 255, 0.5);
+    line-height: 1.3;
+  }
+
+  /* Bottom statement */
+  .bottom-statement {
+    margin-top: auto;
+    text-align: center;
+    padding-bottom: 5px;
+  }
+
+  .never-again {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 28px;
+    color: rgba(245, 240, 255, 0.5);
+    letter-spacing: 4px;
+  }
+
+  .footer-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: rgba(201, 168, 76, 0.3);
+    margin-top: 15px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Flower of Life background -->
+<svg class="sacred-bg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#C9A84C" fill="none" stroke-width="0.5">
+    <!-- Central circle and first ring -->
+    <circle cx="250" cy="250" r="50"/>
+    <circle cx="300" cy="250" r="50"/>
+    <circle cx="200" cy="250" r="50"/>
+    <circle cx="275" cy="293" r="50"/>
+    <circle cx="225" cy="293" r="50"/>
+    <circle cx="275" cy="207" r="50"/>
+    <circle cx="225" cy="207" r="50"/>
+    <!-- Second ring -->
+    <circle cx="350" cy="250" r="50"/>
+    <circle cx="150" cy="250" r="50"/>
+    <circle cx="325" cy="293" r="50"/>
+    <circle cx="175" cy="293" r="50"/>
+    <circle cx="325" cy="207" r="50"/>
+    <circle cx="175" cy="207" r="50"/>
+    <circle cx="300" cy="336" r="50"/>
+    <circle cx="200" cy="336" r="50"/>
+    <circle cx="250" cy="336" r="50"/>
+    <circle cx="300" cy="164" r="50"/>
+    <circle cx="200" cy="164" r="50"/>
+    <circle cx="250" cy="164" r="50"/>
+    <!-- Outer boundary -->
+    <circle cx="250" cy="250" r="150"/>
+    <circle cx="250" cy="250" r="200"/>
+  </g>
+</svg>
+
+<div class="sacred-border"></div>
+
+<!-- Corner ornaments -->
+<div class="corner corner-tl">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,8 L8,8 L8,60 L0,60 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <path d="M0,0 L30,0 L30,3 L3,3 L3,30 L0,30 Z" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-tr">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,60 L52,60 L52,8 L0,8 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <circle cx="56" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-bl">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,8 L8,8 L8,60 L0,60 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+<div class="corner corner-br">
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L60,0 L60,60 L52,60 L52,8 L0,8 Z" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+    <circle cx="56" cy="4" r="2" fill="#C9A84C" opacity="0.4"/>
+  </svg>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="title-number">26</div>
+    <div class="title-sub">The Impossible Sandwich</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="sandwich">
+    <div class="sandwich-item left">
+      <div class="sandwich-num">25</div>
+      <div class="sandwich-label">5&sup2; &mdash; perfect square</div>
+    </div>
+    <div class="sandwich-dash">&mdash;</div>
+    <div class="sandwich-item center">
+      <div class="sandwich-num">26</div>
+      <div class="sandwich-label">the only one</div>
+    </div>
+    <div class="sandwich-dash">&mdash;</div>
+    <div class="sandwich-item right">
+      <div class="sandwich-num">27</div>
+      <div class="sandwich-label">3&sup3; &mdash; perfect cube</div>
+    </div>
+  </div>
+
+  <div class="theorem-box">
+    <div class="theorem-text">
+      The <em>only</em> integer sandwiched between<br>
+      a perfect square and a perfect cube.
+    </div>
+    <div class="theorem-cite">MIHAILESCU'S THEOREM &middot; PROVED 2002</div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="properties">
+    <div class="property">
+      <div class="property-value">YHWH = 26</div>
+      <div class="property-label">Gematria value of the Tetragrammaton &mdash; the unspeakable name of God</div>
+    </div>
+    <div class="property">
+      <div class="property-value">26 DIMENSIONS</div>
+      <div class="property-label">Required by bosonic string theory for mathematical consistency</div>
+    </div>
+    <div class="property">
+      <div class="property-value">26 SPORADIC GROUPS</div>
+      <div class="property-label">The finite simple groups that defy classification &mdash; cosmic outliers</div>
+    </div>
+    <div class="property">
+      <div class="property-value">Fe &middot; Z = 26</div>
+      <div class="property-label">Iron &mdash; the most stable element in the universe. Where fusion ends.</div>
+    </div>
+  </div>
+
+  <div class="divider-thin"></div>
+
+  <div class="bottom-statement">
+    <div class="never-again">"This will never happen again."</div>
+    <div class="footer-text">dmt.lucy.cab</div>
+  </div>
+
+</div>
+
+</body>
+</html>

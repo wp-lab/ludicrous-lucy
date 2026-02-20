@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dragon Moon Temple — The Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Orbitron:wght@400;500;600&family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050505;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201, 168, 76, 0.15);
+      --gold-glow: rgba(201, 168, 76, 0.06);
+      --purple: #A855F7;
+      --ember: #e8611a;
+      --text: #F5F0FF;
+      --text-dim: rgba(245, 240, 255, 0.35);
+      --text-muted: rgba(245, 240, 255, 0.15);
+      --font-display: 'Orbitron', sans-serif;
+      --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--text);
+    }
+    body {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    /* -- Background --------------------------------- */
+    .background {
+      position: fixed; inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 50% 30%, #0a0508 0%, var(--bg) 70%);
+    }
+    .scanlines {
+      position: fixed; inset: 0;
+      z-index: 99;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0px, transparent 4px,
+        rgba(255,255,255,0.006) 4px, rgba(255,255,255,0.006) 6px
+      );
+    }
+
+    /* -- Particles ---------------------------------- */
+    .particle {
+      position: fixed;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      z-index: 1;
+      animation: drift 25s infinite ease-in-out;
+    }
+    @keyframes drift {
+      0% { opacity: 0; transform: translateY(0) translateX(0); }
+      15% { opacity: 0.15; }
+      50% { opacity: 0.25; transform: translateY(-120px) translateX(15px); }
+      85% { opacity: 0.08; }
+      100% { opacity: 0; transform: translateY(-240px) translateX(-10px); }
+    }
+
+    /* -- Content container --------------------------- */
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: min(780px, 90vw);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* -- Hero section ------------------------------- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 2rem;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      animation: fadeIn 3s ease-out 0.5s forwards;
+    }
+    .hero-subtitle {
+      font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-dim);
+      max-width: 500px;
+      opacity: 0;
+      animation: fadeIn 3s ease-out 1.5s forwards;
+    }
+    .hero-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      animation: fadeIn 3s ease-out 2s forwards;
+    }
+    .hero-etymology {
+      font-family: var(--font-serif);
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 300;
+      color: rgba(245, 240, 255, 0.5);
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeIn 3s ease-out 2.5s forwards;
+    }
+    .hero-etymology em {
+      color: var(--gold);
+      font-style: italic;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* -- Side navigation (scrollspy) ---------------- */
+    .side-nav {
+      position: fixed;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .side-nav.visible { opacity: 1; }
+    .side-nav a {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: lowercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.3rem 0;
+      border-left: 1px solid transparent;
+      padding-left: 0.8rem;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+    }
+    .side-nav a:hover {
+      color: var(--text-dim);
+    }
+    .side-nav a.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+    }
+    @media (max-width: 1100px) {
+      .side-nav { display: none; }
+    }
+
+    /* -- Sections ----------------------------------- */
+    .lib-section {
+      padding: 5rem 0 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+    }
+    .lib-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section-number {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .section-line {
+      width: 40px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 0 auto 2rem;
+    }
+    .section-intro {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(245, 240, 255, 0.5);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* -- Body text ---------------------------------- */
+    .body-text {
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+      color: rgba(245, 240, 255, 0.65);
+      margin-bottom: 1.5rem;
+      text-align: left;
+      line-height: 1.9;
+    }
+    .body-text strong {
+      color: rgba(245, 240, 255, 0.85);
+      font-weight: 400;
+    }
+    .body-text em {
+      color: rgba(245, 240, 255, 0.75);
+    }
+    .body-text a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-dim);
+      transition: border-color 0.3s;
+    }
+    .body-text a:hover {
+      border-bottom-color: var(--gold);
+    }
+
+    /* -- Blockquotes -------------------------------- */
+    blockquote {
+      border-left: 2px solid var(--gold);
+      padding: 1.2rem 1.5rem;
+      margin: 2rem 0;
+      background: rgba(201, 168, 76, 0.02);
+      border-radius: 0 4px 4px 0;
+    }
+    blockquote p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      font-style: italic;
+      color: rgba(245, 240, 255, 0.7);
+      text-align: left;
+      margin-bottom: 0;
+      line-height: 1.8;
+    }
+    blockquote .attribution {
+      display: block;
+      margin-top: 0.8rem;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 0.75rem;
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    /* -- Subheading --------------------------------- */
+    .sub-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      font-weight: 400;
+      color: rgba(245, 240, 255, 0.85);
+      margin: 2.5rem 0 1rem;
+      text-align: left;
+    }
+
+    /* -- Feature callout ----------------------------- */
+    .feature-callout {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      margin: 2rem 0;
+      border: 1px solid var(--gold-glow);
+      border-radius: 4px;
+      background: rgba(201, 168, 76, 0.015);
+    }
+    .feature-callout .greek {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .feature-callout .translation {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 200;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* -- Fact cards --------------------------------- */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 550px) {
+      .fact-grid { grid-template-columns: 1fr; }
+    }
+    .fact-card {
+      padding: 1.5rem;
+      border: 1px solid var(--gold-glow);
+      border-radius: 4px;
+      background: rgba(201, 168, 76, 0.02);
+      text-align: left;
+    }
+    .fact-card h3 {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .fact-card p {
+      font-size: 0.9rem;
+      text-align: left;
+      margin: 0;
+      color: rgba(245, 240, 255, 0.6);
+      line-height: 1.7;
+    }
+
+    /* -- Comparison table ---------------------------- */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 2rem 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dragon-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      min-width: 600px;
+    }
+    .dragon-table thead th {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 0.8rem 0.6rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gold-dim);
+      white-space: nowrap;
+    }
+    .dragon-table tbody td {
+      padding: 0.7rem 0.6rem;
+      color: rgba(245, 240, 255, 0.6);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.04);
+      vertical-align: top;
+    }
+    .dragon-table tbody tr:hover td {
+      background: rgba(201, 168, 76, 0.02);
+    }
+    .dragon-table .culture-name {
+      color: rgba(245, 240, 255, 0.85);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+    .dragon-table .dragon-name {
+      font-style: italic;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+    .dragon-table .wings-no {
+      color: rgba(245, 240, 255, 0.3);
+    }
+    .dragon-table .wings-yes {
+      color: var(--ember);
+      opacity: 0.6;
+    }
+
+    /* -- List style --------------------------------- */
+    .styled-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      padding: 0;
+    }
+    .styled-list li {
+      position: relative;
+      padding-left: 1.2rem;
+      margin-bottom: 0.8rem;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      color: rgba(245, 240, 255, 0.6);
+      line-height: 1.7;
+      text-align: left;
+    }
+    .styled-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.7em;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.4;
+    }
+
+    /* -- Divider ------------------------------------ */
+    .section-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 4rem auto;
+    }
+
+    /* -- Fixed bottom nav --------------------------- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      z-index: 50;
+      text-align: center;
+      padding: 1rem 0;
+      background: linear-gradient(to top, var(--bg) 40%, transparent);
+      pointer-events: none;
+    }
+    .bottom-nav-inner {
+      pointer-events: auto;
+      display: inline-flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .bottom-nav a {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: lowercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.4s ease;
+      padding: 0.3rem 0;
+    }
+    .bottom-nav a:hover {
+      color: var(--gold);
+    }
+    .bottom-nav a.current {
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--gold-dim);
+    }
+    .bottom-nav .dot {
+      color: var(--text-muted);
+      font-size: 0.5rem;
+    }
+
+    /* -- Footer ------------------------------------- */
+    footer {
+      padding: 4rem 0 6rem;
+      text-align: center;
+    }
+    .footer-text {
+      font-family: var(--font-body);
+      font-weight: 200;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+    .footer-text a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-glow);
+    }
+    .footer-text a:hover { color: var(--gold); }
+
+    /* -- Reduced motion ----------------------------- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .lib-section { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background"></div>
+  <div class="scanlines"></div>
+  <div id="particles"></div>
+
+  <!-- Side navigation (scrollspy) -->
+  <nav class="side-nav" id="sideNav">
+    <a href="#first-dragon" data-section="first-dragon">The First Dragon</a>
+    <a href="#no-wings" data-section="no-wings">No Wings</a>
+    <a href="#cosmic-serpent" data-section="cosmic-serpent">Cosmic Serpent</a>
+    <a href="#sun-moon" data-section="sun-moon">Sun &amp; Moon</a>
+    <a href="#dragons-world" data-section="dragons-world">Dragons of the World</a>
+    <a href="#dragons-mind" data-section="dragons-mind">The Dragon's Mind</a>
+    <a href="#alchemist" data-section="alchemist">The Alchemist's Dragon</a>
+    <a href="#dragon-facts" data-section="dragon-facts">Dragon Facts</a>
+  </nav>
+
+  <div class="content">
+
+    <!-- == HERO ===================================== -->
+    <div class="hero">
+      <h1 class="hero-title">The Library</h1>
+      <div class="hero-line"></div>
+      <p class="hero-subtitle">Nerdy rabbit holes. Deep research. The mythology, psychology, and science behind the dragons.</p>
+      <div class="feature-callout" style="opacity:0; animation: fadeIn 3s ease-out 2.5s forwards; border: none; background: none; padding: 1rem 0;">
+        <div class="greek">&delta;&rho;&alpha;&kappa;&omega;&nu;</div>
+        <div class="translation">drak&#333;n &mdash; &ldquo;the one who sees clearly&rdquo;</div>
+      </div>
+    </div>
+
+    <!-- == I. THE FIRST DRAGON ====================== -->
+    <section class="lib-section" id="first-dragon">
+      <div class="section-number">I</div>
+      <div class="section-title">The First Dragon</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The oldest dragon story on Earth is 3,500 years old and preserved in the Rig Veda.</p>
+
+      <p class="body-text">
+        Long before Smaug or Drogon, before the European dragon ever grew wings, a cosmic serpent
+        called <strong>Vritra</strong> coiled around the mountains of the world and imprisoned all the waters
+        within his ninety-nine fortresses. His name in Sanskrit means &ldquo;the enveloper,&rdquo; &ldquo;the obstructor.&rdquo;
+        He is also called <strong>Ahi</strong> &mdash; simply &ldquo;serpent.&rdquo;
+      </p>
+
+      <p class="body-text">
+        The myth of Indra slaying Vritra is the most frequently referenced story in the entire Rig Veda,
+        appearing in over <strong>250 verses across 1,028 hymns</strong>. It is the foundational dragon-slaying
+        narrative of the Indo-European world &mdash; the template from which Zeus vs. Typhon, Thor vs. Jormungandr,
+        and every subsequent hero-versus-dragon story descends.
+      </p>
+
+      <blockquote>
+        <p>I will declare the manly deeds of Indra, the first that he achieved, the Thunder-wielder.
+        He slew the Dragon, then disclosed the waters, and cleft the channels of the mountain torrents.</p>
+        <span class="attribution">Rig Veda 1.32.1 (Griffith translation)</span>
+      </blockquote>
+
+      <p class="body-text">
+        The structure is precise and ritualistic. Indra drinks <strong>Soma</strong> &mdash; the sacred plant sacrament &mdash;
+        from three beakers at the house of the divine craftsman Tvashtri. He takes up the <strong>vajra</strong>,
+        the thunderbolt, and strikes Vritra &ldquo;between the shoulders.&rdquo; The serpent falls.
+        The Seven Rivers cascade free. Sun, Dawn, and Heaven come to life. Cosmic order is restored.
+      </p>
+
+      <blockquote>
+        <p>Footless and handless still, he challenged Indra, who smote him with his bolt between the shoulders.
+        Emasculate yet claiming manly vigour, thus Vritra lay with scattered limbs dissevered.</p>
+        <span class="attribution">Rig Veda 1.32.7</span>
+      </blockquote>
+
+      <p class="body-text">
+        Notice: <strong>&ldquo;footless and handless.&rdquo;</strong> No legs. No arms. No wings. The first dragon
+        on record is a pure serpent &mdash; a cosmic snake lying on the mountain, vast and immovable,
+        holding back the waters of life.
+      </p>
+
+      <div class="sub-heading">The Paradox of the Craftsman</div>
+
+      <p class="body-text">
+        Here is the part that keeps philosophers awake. The divine craftsman <strong>Tvashtri</strong>
+        fashions the vajra &mdash; the weapon that kills the dragon. He also hosts the Soma
+        that empowers the hero. And in later Vedic accounts, Tvashtri is the one who <em>creates Vritra himself</em>
+        as revenge for Indra killing his three-headed son. The same hand forges the dragon and the weapon
+        that destroys it. Creation and destruction flow from a single source.
+      </p>
+
+      <p class="body-text">
+        The key Sanskrit formula is <strong><em>ahann ahim</em></strong> &mdash; &ldquo;he slew the serpent.&rdquo;
+        Two words that echo across three and a half millennia of human storytelling.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == II. WHERE WE GO, WE DON'T NEED WINGS ===== -->
+    <section class="lib-section" id="no-wings">
+      <div class="section-number">II</div>
+      <div class="section-title">Where We Go, We Don&rsquo;t Need Wings</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The winged dragon is a Western European invention. The real dragons swim.</p>
+
+      <p class="body-text">
+        If you picture a dragon, you probably see wings. Bat-like, leathery, stretched between bony fingers.
+        That image is roughly 800 years old and confined to one corner of the world. The vast majority
+        of the planet&rsquo;s dragon traditions feature wingless, serpentine creatures &mdash; and they are
+        far older.
+      </p>
+
+      <ul class="styled-list">
+        <li><strong>Chinese Long (&#40845;)</strong> &mdash; serpentine body, deer horns, eagle claws, fish scales,
+        no wings. Flies through magical power, not aerodynamics. Archaeological evidence dates to 4700 BCE.</li>
+        <li><strong>Indian Nagas</strong> &mdash; half-human, half-cobra serpent deities who move through cosmic
+        waters and underground realms. Shesha, the infinite serpent, supports Vishnu on the cosmic ocean.</li>
+        <li><strong>Vedic Vritra</strong> &mdash; &ldquo;footless and handless&rdquo; &mdash; a pure serpent form.</li>
+        <li><strong>Aboriginal Rainbow Serpent</strong> &mdash; creates rivers and mountains by slithering across the
+        landscape. Connects earth and sky through the rainbow, not through wings.</li>
+        <li><strong>Quetzalcoatl</strong> &mdash; the Feathered Serpent has quetzal bird plumes, not bat wings.
+        Feathers represent sky-connection, not flight mechanics.</li>
+        <li><strong>Jormungandr</strong> &mdash; the World Serpent encircling Midgard. So vast it bites its own tail. No wings.</li>
+      </ul>
+
+      <p class="body-text">
+        So when did Europe add wings? It happened gradually between the 11th and 13th centuries.
+        The Beowulf dragon (c. 8th century) breathes fire and can fly, but by unspecified means &mdash;
+        no explicit wings. The first &ldquo;fully modern&rdquo; winged dragon appears around 1260 AD in
+        manuscript MS Harley 3244.
+      </p>
+
+      <p class="body-text">
+        <strong>Why?</strong> Near Eastern cultural influences. Griffin imagery. Christian iconography
+        needed dragons as <em>aerial</em> threats &mdash; enemies of heaven, fallen angels who therefore
+        required wings. The bat-wing came from depictions of demons. It was a theological innovation,
+        not a mythological one.
+      </p>
+
+      <p class="body-text">
+        The cosmic serpent&rsquo;s mode of transport is not flight. It is <strong>transformation itself</strong>.
+        Chinese dragons <em>are</em> the weather, not flying through it. The Rainbow Serpent <em>is</em>
+        the rainbow &mdash; the bridge between earth and sky. Kundalini rises through the spine. The ouroboros
+        goes nowhere and everywhere. The serpentine dragon moves through states of being: water to cloud,
+        earth to sky, matter to spirit.
+      </p>
+
+      <blockquote>
+        <p>Where we go, we don&rsquo;t need wings.</p>
+      </blockquote>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == III. THE COSMIC SERPENT =================== -->
+    <section class="lib-section" id="cosmic-serpent">
+      <div class="section-number">III</div>
+      <div class="section-title">The Cosmic Serpent</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Twin serpents, double helices, and the form of life itself.</p>
+
+      <p class="body-text">
+        In 1998, the anthropologist <strong>Jeremy Narby</strong> published a book that made the scientific
+        establishment deeply uncomfortable. <em>The Cosmic Serpent: DNA and the Origins of Knowledge</em>
+        began with a simple observation: Amazonian shamans, using ayahuasca, consistently described visions
+        of <strong>twin intertwined serpents</strong> &mdash; and their description was structurally identical
+        to the double helix of DNA.
+      </p>
+
+      <p class="body-text">
+        Narby had spent years studying the Ash&aacute;ninka people in Peru. He initially dismissed their claims
+        that plants &ldquo;speak&rdquo; about their healing properties during ayahuasca ceremonies. But he
+        couldn&rsquo;t dismiss their botanical knowledge &mdash; which was precise, extensive, and consistently
+        attributed to serpent visions.
+      </p>
+
+      <p class="body-text">
+        The twin serpent motif is not local. It appears <em>everywhere</em>:
+      </p>
+
+      <ul class="styled-list">
+        <li><strong>Caduceus</strong> &mdash; twin snakes around a staff (Greek)</li>
+        <li><strong>Ningishzida</strong> &mdash; two intertwined serpents (Sumerian)</li>
+        <li><strong>Naga pairs</strong> in Hindu temple architecture</li>
+        <li><strong>Aboriginal Australian</strong> intertwined serpent designs</li>
+        <li><strong>Ida and Pingala</strong> &mdash; the twin channels of kundalini yoga, winding around the
+        central sushumna like snakes around a staff &mdash; visually identical to the caduceus and the double helix</li>
+      </ul>
+
+      <div class="sub-heading">Kundalini &mdash; The Serpent Within</div>
+
+      <p class="body-text">
+        The Sanskrit word means &ldquo;coiled one&rdquo; &mdash; a dormant serpent of primordial energy, coiled
+        three and a half times at the base of the spine. When awakened through practice, it rises through
+        the sushumna channel, activating each chakra as it ascends, traveling between the ida (lunar, left)
+        and pingala (solar, right) channels &mdash; the twin serpents &mdash; until it reaches the crown
+        for the union of Shakti with Shiva.
+      </p>
+
+      <p class="body-text">
+        The spine <em>is</em> the world tree. The chakras <em>are</em> the dragon&rsquo;s treasures guarded
+        at each threshold. Awakening kundalini <em>is</em> the hero&rsquo;s journey &mdash; not slaying the
+        inner serpent but befriending it.
+      </p>
+
+      <div class="sub-heading">The Rainbow Serpent</div>
+
+      <p class="body-text">
+        The Aboriginal Rainbow Serpent is one of the oldest continuous mythological traditions on Earth &mdash;
+        tens of thousands of years old. It awakens from beneath a flat, barren earth. Slithers upward, forming
+        rivers, gorges, mountains, and permanent waterholes through its massive body. Dwells in deep waterholes.
+        Controls rainfall. Punishes law-breakers. Rewards harmony.
+      </p>
+
+      <p class="body-text">
+        And when it travels between waterholes during drought, it becomes visible as the <strong>rainbow</strong>
+        &mdash; the bridge between earth and sky. Not flight. Manifestation as light itself. Perhaps the most
+        elegant expression of the wingless dragon principle.
+      </p>
+
+      <div class="sub-heading">Ouroboros &mdash; The Self-Eating Serpent</div>
+
+      <p class="body-text">
+        First appearance: Egyptian funerary texts, c. 14th century BCE, in Tutankhamun&rsquo;s tomb. The serpent
+        eating its own tail. Unity of all things. Eternal cycle. Destruction and re-creation. It doesn&rsquo;t
+        need wings because it has no destination &mdash; it <em>is</em> the journey. In alchemy, the ouroboros
+        represents the circular Great Work: putrefaction producing color changes from dark green to gold to red.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == IV. SUN, MOON & ECLIPSE ================== -->
+    <section class="lib-section" id="sun-moon">
+      <div class="section-number">IV</div>
+      <div class="section-title">Sun, Moon &amp; Eclipse</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The dragon holds the luminaries in balance. This is the heart of the temple.</p>
+
+      <p class="body-text">
+        In Vedic astrology, the lunar nodes &mdash; the mathematical points where the Moon&rsquo;s orbit
+        intersects Earth&rsquo;s ecliptic &mdash; are personified as the severed head and tail of a
+        demon-serpent. This is the myth of <strong>Rahu and Ketu</strong>.
+      </p>
+
+      <p class="body-text">
+        During the Samudra Manthan, the great Churning of the Ocean of Milk, the demon Svarbhanu
+        disguises himself as a god and drinks the amrita &mdash; the nectar of immortality. The Sun and Moon
+        spot the deception and alert Vishnu. His spinning discus decapitates the demon. But too late:
+        the nectar has already passed his throat. Both halves are immortal.
+      </p>
+
+      <p class="body-text">
+        The <strong>head</strong> becomes <strong>Rahu</strong> &mdash; the ascending node, the dragon&rsquo;s head.
+        Voracious, driven by desire, confused through ignorance. The <strong>tail</strong> becomes <strong>Ketu</strong>
+        &mdash; the descending node, the dragon&rsquo;s tail. Detached, mystical, confused through over-certainty.
+        They are always 180 degrees apart, creating a karmic axis &mdash; the tension between attachment and release.
+      </p>
+
+      <p class="body-text">
+        During eclipses, <strong>Rahu swallows the Sun or Moon</strong> &mdash; revenge for the luminaries
+        exposing him. The light passes through the severed neck and emerges again. Solar eclipses are moments
+        of cosmic imbalance: the dragon temporarily victorious, light temporarily consumed.
+      </p>
+
+      <div class="sub-heading">The Dragon Pearl</div>
+
+      <p class="body-text">
+        In Chinese dragon mythology, the dragon is depicted clutching or pursuing a flaming pearl &mdash;
+        representing wisdom, thunder, enlightenment, or the moon. Two dragons chasing a single pearl
+        is the pursuit of cosmic truth. The dragon is yang &mdash; male, active, heavenly &mdash;
+        paired with the phoenix (yin) for perfect harmony. The Azure Dragon rules the east, the direction
+        of sunrise.
+      </p>
+
+      <p class="body-text">
+        And the European dragon on its hoard? Gold is solidified sunlight. Gems are crystallized starlight.
+        The dragon sits on energy it cannot use &mdash; trapped, like Vritra trapping the waters. The hero
+        who slays the dragon and distributes the treasure restores cosmic flow.
+      </p>
+
+      <blockquote>
+        <p>The Dragon Moon Temple is a place of eclipse consciousness &mdash; where opposites are held
+        in tension, where the dragon is not slain but honored as the keeper of balance.</p>
+      </blockquote>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == V. DRAGONS OF THE WORLD ================== -->
+    <section class="lib-section" id="dragons-world">
+      <div class="section-number">V</div>
+      <div class="section-title">Dragons of the World</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Every culture has a dragon. Not because they copied each other.</p>
+
+      <p class="body-text">
+        The universality is the point. From Babylonian salt-water chaos goddesses to Aboriginal creators
+        who carved rivers with their bodies, from Norse world-serpents biting their own tails to Aztec
+        feathered serpents descending pyramids as equinox shadows &mdash; something in human consciousness
+        recognises the dragon.
+      </p>
+
+      <div class="table-wrap">
+        <table class="dragon-table">
+          <thead>
+            <tr>
+              <th>Culture</th>
+              <th>Dragon</th>
+              <th>Wings?</th>
+              <th>Element</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="culture-name">Vedic India</td>
+              <td class="dragon-name">Vritra / Ahi</td>
+              <td class="wings-no">No</td>
+              <td>Water (imprisoned)</td>
+              <td>Chaos, obstruction</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Hindu India</td>
+              <td class="dragon-name">Nagas (Shesha, Vasuki)</td>
+              <td class="wings-no">No</td>
+              <td>Water, earth</td>
+              <td>Guardians, wisdom</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Babylon</td>
+              <td class="dragon-name">Tiamat</td>
+              <td class="wings-no">Debated</td>
+              <td>Salt water</td>
+              <td>Primordial chaos / creation</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Egypt</td>
+              <td class="dragon-name">Apophis</td>
+              <td class="wings-no">No</td>
+              <td>Darkness</td>
+              <td>Eternal chaos</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Norse</td>
+              <td class="dragon-name">Jormungandr</td>
+              <td class="wings-no">No</td>
+              <td>Ocean</td>
+              <td>World-container / destroyer</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Norse</td>
+              <td class="dragon-name">Nidhogg</td>
+              <td class="wings-no">No</td>
+              <td>Earth, roots</td>
+              <td>Decay, persistence</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Greece</td>
+              <td class="dragon-name">Typhon</td>
+              <td class="wings-yes">Yes</td>
+              <td>Storm</td>
+              <td>Chaos vs. divine order</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Greece</td>
+              <td class="dragon-name">Python</td>
+              <td class="wings-no">No</td>
+              <td>Earth</td>
+              <td>Oracle guardian</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Persia</td>
+              <td class="dragon-name">Azi Dahaka</td>
+              <td class="wings-yes">Yes</td>
+              <td>Storm, poison</td>
+              <td>Evil incarnate</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Wales</td>
+              <td class="dragon-name">Y Ddraig Goch</td>
+              <td class="wings-yes">Yes (later)</td>
+              <td>Fire</td>
+              <td>National protector</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Slavic</td>
+              <td class="dragon-name">Zmey Gorynych</td>
+              <td class="wings-yes">Yes</td>
+              <td>Fire, storm</td>
+              <td>Chaos (Russia) / protector (Balkans)</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Japan</td>
+              <td class="dragon-name">Ryujin</td>
+              <td class="wings-no">No</td>
+              <td>Water</td>
+              <td>Sea god, guardian</td>
+            </tr>
+            <tr>
+              <td class="culture-name">China</td>
+              <td class="dragon-name">Long (various)</td>
+              <td class="wings-no">No</td>
+              <td>Water, weather</td>
+              <td>Benevolent power</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Tibet / Bhutan</td>
+              <td class="dragon-name">Druk</td>
+              <td class="wings-no">No</td>
+              <td>Thunder, sky</td>
+              <td>Enlightenment</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Mesoamerica</td>
+              <td class="dragon-name">Quetzalcoatl</td>
+              <td class="wings-no">Feathers</td>
+              <td>Wind, Venus</td>
+              <td>Creator, civilizer</td>
+            </tr>
+            <tr>
+              <td class="culture-name">Aboriginal Australia</td>
+              <td class="dragon-name">Rainbow Serpent</td>
+              <td class="wings-no">No</td>
+              <td>Water, rainbow</td>
+              <td>Creator, law-keeper</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="body-text">
+        Count the &ldquo;No&rdquo; column. Of sixteen traditions, only four have wings &mdash; and three
+        of those are European or Persian. The winged dragon is the outlier, not the archetype.
+      </p>
+
+      <p class="body-text">
+        The deepest pattern: <strong>the dragon is associated with water</strong>, not fire. Rain,
+        rivers, oceans, the cosmic ocean of milk. Vritra imprisons the waters. Chinese dragons bring rain.
+        Ryujin rules the tides. The Rainbow Serpent carves rivers. The dragon&rsquo;s true element is water &mdash;
+        liberation, flow, the source of life.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == VI. THE DRAGON'S MIND ==================== -->
+    <section class="lib-section" id="dragons-mind">
+      <div class="section-number">VI</div>
+      <div class="section-title">The Dragon&rsquo;s Mind</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Why does every human culture dream of dragons? Three theories.</p>
+
+      <div class="sub-heading">Jung: The Guardian of the Treasure</div>
+
+      <p class="body-text">
+        Carl Jung saw dragons as manifestations of the <strong>shadow</strong> &mdash; the repressed,
+        unconscious aspects of the psyche. The dragon guards the treasure, and the treasure is the
+        <strong>individuated Self</strong>: wholeness, integration, the reconciliation of opposites.
+        Slaying the dragon means confronting your shadow. The dragon-fight is the central drama of
+        psychological individuation.
+      </p>
+
+      <blockquote>
+        <p>The dragon stands as the guardian of the treasure.</p>
+        <span class="attribution">Carl Jung</span>
+      </blockquote>
+
+      <p class="body-text">
+        Jung noted a crucial East-West split. Western dragons must be slain &mdash; ego dominance over chaos.
+        Eastern dragons are honored &mdash; harmony with the unconscious. Two ways of relating to the same
+        fundamental force.
+      </p>
+
+      <div class="sub-heading">Campbell: The Monster of the Threshold</div>
+
+      <p class="body-text">
+        Joseph Campbell, building on Jung, placed dragon-slaying at the heart of the <strong>monomyth</strong>.
+        The dragon is the &ldquo;monster of the threshold&rdquo; &mdash; guarding the passage between
+        the known and unknown worlds. The hero must face it to gain the boon: treasure, knowledge, transformation.
+      </p>
+
+      <p class="body-text">
+        But Campbell went further. Sometimes the hero doesn&rsquo;t kill the dragon but <em>loves it</em>
+        or <em>assimilates it</em>. Tasting the dragon&rsquo;s blood grants nature&rsquo;s wisdom, as
+        Siegfried discovers in the Nibelungenlied. Integration, not destruction.
+      </p>
+
+      <blockquote>
+        <p>The real dragon is you &hellip; your ego holding you in.</p>
+        <span class="attribution">Joseph Campbell</span>
+      </blockquote>
+
+      <div class="sub-heading">Jones: An Instinct for Dragons</div>
+
+      <p class="body-text">
+        In 2000, anthropologist David E. Jones proposed the most provocative theory of all. In
+        <em>An Instinct for Dragons</em>, he argued that dragon myths arise from an <strong>evolved
+        predator recognition module</strong> in the human brain &mdash; a chimera of our three deepest
+        ancestral fears:
+      </p>
+
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>The Snake</h3>
+          <p>100 million years of primate-snake co-evolution. Humans detect camouflaged snakes faster
+          than any other hidden animal. The fear is literally wired into our visual cortex. The serpent body.</p>
+        </div>
+        <div class="fact-card">
+          <h3>The Raptor</h3>
+          <p>Crowned hawk-eagles preyed on early primates. Predation marks found on primate fossils.
+          The wings.</p>
+        </div>
+        <div class="fact-card">
+          <h3>The Big Cat</h3>
+          <p>Large cats as later-evolving but devastating threats. The claws, the powerful body, the jaws.</p>
+        </div>
+        <div class="fact-card">
+          <h3>The Dragon</h3>
+          <p>Serpent + raptor + big cat = dragon. Not cultural diffusion. Convergent evolution of the
+          same neurological fear response, mythologized differently by each culture.</p>
+        </div>
+      </div>
+
+      <p class="body-text">
+        This explains why every culture has dragons even without contact &mdash; it&rsquo;s not about stories
+        spreading. It&rsquo;s about brains recognising the same ancient pattern.
+      </p>
+
+      <div class="sub-heading">The Dragon at Every Door</div>
+
+      <p class="body-text">
+        Every dragon guards something. Vritra guards the waters. Ladon guards the Golden Apples.
+        Python guards the oracle at Delphi. Nagas guard wisdom in the underworld. The Rainbow Serpent
+        guards sacred waterholes. Apophis guards the underworld passage. Temple entrances across
+        Hindu, Buddhist, Mesoamerican, and Chinese traditions are flanked by serpent guardians.
+      </p>
+
+      <p class="body-text">
+        The principle: <strong>you cannot transform without passing the dragon.</strong> The dragon <em>is</em>
+        the test. The treasure <em>is</em> the transformation. The threshold <em>is</em> the dragon.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == VII. THE ALCHEMIST'S DRAGON =============== -->
+    <section class="lib-section" id="alchemist">
+      <div class="section-number">VII</div>
+      <div class="section-title">The Alchemist&rsquo;s Dragon</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">Solve et coagula. Dissolve and coagulate. The dragon is both the problem and the solution.</p>
+
+      <p class="body-text">
+        In Western alchemy, dragons represent the <strong>prima materia</strong> &mdash; the chaotic,
+        undifferentiated substance from which all transformation begins. The raw material of the Great Work.
+      </p>
+
+      <p class="body-text">
+        The <strong>Green Dragon</strong> is the early stage &mdash; volatile philosophical mercury,
+        raw and unworked. The <strong>Red Dragon</strong> emerges in the rubedo, the reddening &mdash;
+        balanced ultimate matter after coagulation. Spirit becomes body, body becomes spirit.
+      </p>
+
+      <p class="body-text">
+        In alchemical imagery, two dragons fight: the <strong>winged dragon</strong> (spirit, the volatile)
+        against the <strong>wingless dragon</strong> (matter, the fixed). Their combat <em>is</em> the
+        alchemical process. Their resolution is gold.
+      </p>
+
+      <p class="body-text">
+        <strong>Solve et coagula</strong> &mdash; dissolve and coagulate. The fundamental alchemical
+        operation. Solve is the dissolution, the breaking down. Coagula is the re-integration at a
+        higher level. The ouroboros consuming its own tail represents this circular process: putrefaction
+        producing color changes from dark green to gold to red, completing the Great Work.
+      </p>
+
+      <p class="body-text">
+        This is why the dragon is both feared and revered, both monster and treasure. The dragon IS
+        the prima materia &mdash; the chaos that must be faced, dissolved, and reintegrated. Transforming
+        shadow into wholeness. The dragon doesn&rsquo;t guard the gold. The dragon <em>becomes</em> the gold.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == VIII. DRAGON FACTS ======================== -->
+    <section class="lib-section" id="dragon-facts">
+      <div class="section-number">VIII</div>
+      <div class="section-title">Dragon Facts</div>
+      <div class="section-line"></div>
+
+      <p class="section-intro">The nerdy stuff. The things you bring up at parties that make people either fascinated or worried about you.</p>
+
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>The Word</h3>
+          <p>Greek <em>drak&#333;n</em> (&delta;&rho;&alpha;&kappa;&omega;&nu;) comes from
+          <em>derkomai</em> &mdash; &ldquo;to see clearly,&rdquo; &ldquo;to gaze.&rdquo; The dragon is literally
+          &ldquo;the one who sees.&rdquo; The sharp-sighted guardian. Vision itself.</p>
+        </div>
+        <div class="fact-card">
+          <h3>The Pole Star</h3>
+          <p>Thuban (Alpha Draconis) was the North Star around 2700 BCE &mdash; when the pyramids were built.
+          The pole star was literally in the Dragon constellation. The dragon held the axis of the world.</p>
+        </div>
+        <div class="fact-card">
+          <h3>Bhutan</h3>
+          <p><em>Druk Yul</em> &mdash; &ldquo;Land of the Thunder Dragon.&rdquo; The only country in the world
+          with a dragon as its primary flag symbol. Leaders are titled Druk Gyalpo: Thunder Dragon Kings.</p>
+        </div>
+        <div class="fact-card">
+          <h3>Dragon&rsquo;s Blood Trees</h3>
+          <p><em>Dracaena cinnabari</em> on Socotra Island &mdash; named for their deep red resin.
+          One of the most alien-looking trees on Earth. The name Dracaena itself comes from <em>drak&#333;n</em>.</p>
+        </div>
+        <div class="fact-card">
+          <h3>Komodo Dragons</h3>
+          <p>The world&rsquo;s largest living lizard. Up to 3.1 meters, 166 kg. Venomous (not bacterial infection
+          as once thought). Adults eat 80% of their body weight in one meal. First &ldquo;discovered&rdquo;
+          by Westerners in 1912.</p>
+        </div>
+        <div class="fact-card">
+          <h3>Dinosaur &rarr; Dragon</h3>
+          <p>Stanford researcher Adrienne Mayor showed that ancient cultures found dinosaur fossils and attributed
+          them to dragons. In China, dinosaur bones were ground into &ldquo;dragon bones&rdquo; for medicine.
+          The dinosaur <em>Dracorex hogwartsia</em> means &ldquo;Dragon King of Hogwarts.&rdquo;</p>
+        </div>
+        <div class="fact-card">
+          <h3>Claw Protocol</h3>
+          <p>Chinese imperial law: five-clawed dragons exclusively for the Emperor (Son of Heaven).
+          Four claws for nobles. Three claws for commoners. Three claws became the Japanese and Korean standard.</p>
+        </div>
+        <div class="fact-card">
+          <h3>Chichen Itza</h3>
+          <p>During the spring and autumn equinoxes, sunlight creates the shadow of a serpent descending
+          the pyramid of Kukulkan. One of the most dramatic architectural expressions of dragon mythology
+          ever built.</p>
+        </div>
+      </div>
+
+      <div class="feature-callout" style="margin-top: 3rem;">
+        <div class="greek">&delta;&rho;&alpha;&kappa;&omega;&nu;</div>
+        <div class="translation">the one who sees clearly</div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- == FOOTER =================================== -->
+    <footer>
+      <div class="hero-line" style="margin-bottom: 2rem; opacity: 0.3;"></div>
+      <div class="footer-text">
+        <a href="index.html">dragon moon temple</a>
+        &nbsp;&middot;&nbsp;
+        <a href="gallery.html">visions</a>
+        &nbsp;&middot;&nbsp;
+        <a href="chapel.html">the chapel</a>
+        &nbsp;&middot;&nbsp;
+        <a href="glossary.html">glossary</a>
+        &nbsp;&middot;&nbsp;
+        <a href="hexmap.html">map</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://lucy.cab">lucy.cab</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Fixed bottom nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html">temple</a>
+      <span class="dot">&middot;</span>
+      <a href="library.html" class="current">library</a>
+      <span class="dot">&middot;</span>
+      <a href="gallery.html">visions</a>
+      <span class="dot">&middot;</span>
+      <a href="chapel.html">chapel</a>
+      <span class="dot">&middot;</span>
+      <a href="glossary.html">glossary</a>
+      <span class="dot">&middot;</span>
+      <a href="hexmap.html">map</a>
+    </div>
+  </nav>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // -- Particles (fewer than main page) -----------
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 12; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = (20 + Math.random() * 70) + '%';
+      p.style.animationDelay = (Math.random() * 25).toFixed(1) + 's';
+      p.style.animationDuration = (20 + Math.random() * 15).toFixed(1) + 's';
+      particleContainer.appendChild(p);
+    }
+
+    // -- Scroll reveal (IntersectionObserver) --------
+    const sections = document.querySelectorAll('.lib-section');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08 });
+    sections.forEach(s => revealObserver.observe(s));
+
+    // -- Scrollspy for side nav ----------------------
+    const sideNav = document.getElementById('sideNav');
+    const navLinks = sideNav.querySelectorAll('a');
+    const sectionIds = Array.from(navLinks).map(a => a.dataset.section);
+    const sectionElements = sectionIds.map(id => document.getElementById(id));
+    let sideNavVisible = false;
+
+    function updateScrollspy() {
+      const scrollY = window.scrollY + window.innerHeight * 0.35;
+
+      // Show/hide side nav based on scroll position
+      const heroHeight = document.querySelector('.hero').offsetHeight;
+      if (window.scrollY > heroHeight * 0.6 && !sideNavVisible) {
+        sideNav.classList.add('visible');
+        sideNavVisible = true;
+      } else if (window.scrollY <= heroHeight * 0.6 && sideNavVisible) {
+        sideNav.classList.remove('visible');
+        sideNavVisible = false;
+      }
+
+      // Determine active section
+      let activeId = sectionIds[0];
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        if (sectionElements[i] && sectionElements[i].offsetTop <= scrollY) {
+          activeId = sectionIds[i];
+          break;
+        }
+      }
+
+      navLinks.forEach(link => {
+        if (link.dataset.section === activeId) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateScrollspy, { passive: true });
+    updateScrollspy();
+  })();
+  </script>
+</body>
+</html>

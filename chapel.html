@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Dragon Moon Temple — Chapel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050505;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201, 168, 76, 0.15);
+      --gold-glow: rgba(201, 168, 76, 0.06);
+      --ember: #e8611a;
+      --ember-glow: rgba(232, 97, 26, 0.12);
+      --moon: #d4cfc4;
+      --text: #F5F0FF;
+      --text-dim: rgba(245, 240, 255, 0.3);
+      --font: 'Cormorant Garamond', 'Georgia', serif;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      cursor: default;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Entry screen ──────────────────────────── */
+    #entry {
+      position: fixed; inset: 0;
+      z-index: 100;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      transition: opacity 2s ease-out;
+      cursor: pointer;
+    }
+    #entry.fade { opacity: 0; pointer-events: none; }
+    #entry .invite {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      animation: breathe 6s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    /* ── Chapel space ──────────────────────────── */
+    #chapel {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* ── Starfield (canvas) ────────────────────── */
+    #stars {
+      position: absolute; inset: 0;
+      z-index: 1;
+    }
+
+    /* ── Moon ───────────────────────────────────── */
+    .moon {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(60px, 10vw, 120px);
+      height: clamp(60px, 10vw, 120px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, #f0ece0, #d4cfc4 50%, #a09880 100%);
+      box-shadow:
+        0 0 40px rgba(212, 207, 196, 0.15),
+        0 0 80px rgba(212, 207, 196, 0.08),
+        0 0 160px rgba(212, 207, 196, 0.04);
+      z-index: 2;
+      animation: moonGlow 12s ease-in-out infinite;
+    }
+    @keyframes moonGlow {
+      0%, 100% { box-shadow: 0 0 40px rgba(212,207,196,0.15), 0 0 80px rgba(212,207,196,0.08); }
+      50% { box-shadow: 0 0 60px rgba(212,207,196,0.2), 0 0 120px rgba(212,207,196,0.1); }
+    }
+
+    /* ── Central fire / hearth ─────────────────── */
+    .hearth {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .fire-container {
+      position: relative;
+      width: 80px;
+      height: 100px;
+    }
+    .flame {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 20% 20%;
+      filter: blur(1px);
+      animation: flicker var(--dur, 3s) ease-in-out infinite alternate;
+      transform-origin: bottom center;
+    }
+    .flame-core {
+      width: 12px; height: 40px;
+      background: linear-gradient(to top, #e8611a, #ffd700 40%, #fffbe6 80%);
+      --dur: 2.5s;
+      z-index: 3;
+    }
+    .flame-mid {
+      width: 24px; height: 55px;
+      background: linear-gradient(to top, rgba(232,97,26,0.8), rgba(255,165,0,0.5) 60%, transparent);
+      --dur: 3.2s;
+      z-index: 2;
+    }
+    .flame-outer {
+      width: 36px; height: 70px;
+      background: linear-gradient(to top, rgba(232,97,26,0.4), rgba(255,100,0,0.15) 50%, transparent);
+      --dur: 4s;
+      z-index: 1;
+      filter: blur(3px);
+    }
+    .fire-glow {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 60px;
+      background: radial-gradient(ellipse, rgba(232,97,26,0.12) 0%, transparent 70%);
+      animation: pulseGlow 4s ease-in-out infinite;
+      z-index: 0;
+    }
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scaleY(1) scaleX(1) rotate(-1deg); }
+      25% { transform: translateX(-50%) scaleY(1.08) scaleX(0.95) rotate(0.5deg); }
+      50% { transform: translateX(-50%) scaleY(0.95) scaleX(1.05) rotate(-0.5deg); }
+      75% { transform: translateX(-50%) scaleY(1.05) scaleX(0.97) rotate(1deg); }
+      100% { transform: translateX(-50%) scaleY(0.97) scaleX(1.03) rotate(-0.5deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+    }
+
+    /* ── Candles ────────────────────────────────── */
+    .candle {
+      position: absolute;
+      z-index: 4;
+    }
+    .candle-body {
+      width: 6px;
+      height: var(--h, 30px);
+      background: linear-gradient(to top, #8a6e2f, #C9A84C 30%, #d4b060);
+      border-radius: 1px 1px 0 0;
+    }
+    .candle-flame {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 14px;
+      background: linear-gradient(to top, #e8611a, #ffd700 50%, #fffbe6 90%);
+      border-radius: 50% 50% 20% 20%;
+      filter: blur(0.5px);
+      animation: candleFlicker var(--cdur, 2s) ease-in-out infinite alternate;
+    }
+    .candle-glow {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(255,200,50,0.08) 0%, transparent 70%);
+      animation: candleFlicker var(--cdur, 2s) ease-in-out infinite alternate;
+    }
+    @keyframes candleFlicker {
+      0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.8; }
+      33% { transform: translateX(-48%) scaleY(1.1) scaleX(0.9); opacity: 1; }
+      66% { transform: translateX(-52%) scaleY(0.9) scaleX(1.05); opacity: 0.85; }
+      100% { transform: translateX(-50%) scaleY(1.05) scaleX(0.95); opacity: 0.95; }
+    }
+
+    /* ── Dragon silhouette ─────────────────────── */
+    .dragon-left, .dragon-right {
+      position: absolute;
+      z-index: 3;
+      opacity: 0.04;
+      transition: opacity 30s ease;
+    }
+    .dragon-left {
+      left: 5%;
+      top: 20%;
+      width: clamp(120px, 20vw, 280px);
+      animation: dragonBreathL 20s ease-in-out infinite;
+    }
+    .dragon-right {
+      right: 5%;
+      top: 20%;
+      width: clamp(120px, 20vw, 280px);
+      animation: dragonBreathR 20s ease-in-out infinite;
+      transform: scaleX(-1);
+    }
+    @keyframes dragonBreathL {
+      0%, 100% { opacity: 0.03; transform: translateY(0); }
+      50% { opacity: 0.06; transform: translateY(-8px); }
+    }
+    @keyframes dragonBreathR {
+      0%, 100% { opacity: 0.03; transform: scaleX(-1) translateY(0); }
+      50% { opacity: 0.06; transform: scaleX(-1) translateY(-8px); }
+    }
+
+    /* ── Mantra text ───────────────────────────── */
+    .mantra {
+      position: absolute;
+      bottom: 28%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      text-align: center;
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      white-space: nowrap;
+      animation: mantraFade 30s ease-in-out infinite;
+      user-select: none;
+    }
+    @keyframes mantraFade {
+      0%, 10% { opacity: 0; }
+      15%, 85% { opacity: 0.4; }
+      90%, 100% { opacity: 0; }
+    }
+
+    /* ── Audio toggle ──────────────────────────── */
+    .audio-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 20;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-glow);
+      background: rgba(5, 5, 5, 0.8);
+      color: var(--text-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+    .audio-toggle.visible { opacity: 0.5; }
+    .audio-toggle:hover { opacity: 0.8; border-color: var(--gold-dim); }
+    .audio-toggle.active { opacity: 0.7; border-color: var(--gold); color: var(--gold); }
+    .audio-toggle svg { width: 20px; height: 20px; }
+
+    /* ── Nav hint ───────────────────────────────── */
+    .nav-hint {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 20;
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity 1s ease;
+      letter-spacing: 0.1em;
+    }
+    .nav-hint.visible { opacity: 0.3; }
+    .nav-hint:hover { opacity: 0.5; }
+    .nav-hint a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--gold-glow); }
+    .nav-hint a:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+    /* ── Scanlines ──────────────────────────────── */
+    .scanlines {
+      position: fixed; inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 4px,
+        rgba(255,255,255,0.006) 4px,
+        rgba(255,255,255,0.006) 6px
+      );
+    }
+
+    /* ── Reduced motion ────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Entry threshold -->
+  <div id="entry">
+    <div class="invite">enter the temple</div>
+  </div>
+
+  <!-- Chapel space -->
+  <div id="chapel">
+    <canvas id="stars"></canvas>
+
+    <div class="moon"></div>
+
+    <!-- Dragon silhouettes (SVG inline) -->
+    <svg class="dragon-left" viewBox="0 0 200 400" fill="currentColor" style="color: var(--gold);">
+      <path d="M100,20 C60,20 30,60 25,100 C20,140 30,160 20,200 C10,240 15,280 30,310
+               C45,340 70,360 100,380 C90,350 85,320 90,290 C95,260 110,240 105,210
+               C100,180 80,170 85,140 C90,110 110,90 120,70 C130,50 120,30 100,20Z
+               M80,80 C85,75 92,78 90,85 C88,92 80,90 80,80Z
+               M40,200 C30,195 25,210 35,215 C45,220 50,210 40,200Z
+               M50,260 C40,258 38,270 48,272 C58,274 55,262 50,260Z"/>
+    </svg>
+    <svg class="dragon-right" viewBox="0 0 200 400" fill="currentColor" style="color: var(--gold);">
+      <path d="M100,20 C60,20 30,60 25,100 C20,140 30,160 20,200 C10,240 15,280 30,310
+               C45,340 70,360 100,380 C90,350 85,320 90,290 C95,260 110,240 105,210
+               C100,180 80,170 85,140 C90,110 110,90 120,70 C130,50 120,30 100,20Z
+               M80,80 C85,75 92,78 90,85 C88,92 80,90 80,80Z
+               M40,200 C30,195 25,210 35,215 C45,220 50,210 40,200Z
+               M50,260 C40,258 38,270 48,272 C58,274 55,262 50,260Z"/>
+    </svg>
+
+    <!-- Central hearth fire -->
+    <div class="hearth">
+      <div class="fire-container">
+        <div class="flame flame-outer"></div>
+        <div class="flame flame-mid"></div>
+        <div class="flame flame-core"></div>
+        <div class="fire-glow"></div>
+      </div>
+    </div>
+
+    <!-- Candles (positioned by JS) -->
+    <div id="candles"></div>
+
+    <!-- Rotating mantra -->
+    <div class="mantra" id="mantra"></div>
+  </div>
+
+  <!-- Audio toggle -->
+  <button class="audio-toggle" id="audioBtn" title="Toggle ambient sound">
+    <svg id="audioIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.08"></path>
+    </svg>
+  </button>
+
+  <!-- Navigation hint -->
+  <div class="nav-hint" id="navHint">
+    <a href="index.html">temple</a> &middot; <a href="library.html">library</a> &middot; <a href="gallery.html">visions</a> &middot; chapel &middot; <a href="glossary.html">glossary</a> &middot; <a href="hexmap.html">map</a>
+  </div>
+
+  <!-- Scanlines overlay -->
+  <div class="scanlines"></div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // ── Mantras ──────────────────────────────────
+    const MANTRAS = [
+      'two dragons guard sun and moon',
+      'where we go, we don\u2019t need wings',
+      'the dragon transcends',
+      'as within, so without',
+      'om namah shivaya',
+      'the cosmic serpent dreams',
+      'ahann ahim',
+      'fire transforms all',
+      'the temple is within',
+      'spirit emerges in relationship',
+      'solve et coagula',
+      'where we go, we don\u2019t need roads',
+    ];
+
+    let mantraIndex = 0;
+    const mantraEl = document.getElementById('mantra');
+
+    function cycleMantra() {
+      mantraEl.textContent = MANTRAS[mantraIndex];
+      mantraIndex = (mantraIndex + 1) % MANTRAS.length;
+    }
+
+    // ── Starfield ────────────────────────────────
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const STAR_COUNT = 200;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.2 + 0.2,
+          baseAlpha: Math.random() * 0.5 + 0.1,
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinkleOffset: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function drawStars(time) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        const alpha = s.baseAlpha + Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.15;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(220, 215, 200, ${Math.max(0.02, alpha)})`;
+        ctx.fill();
+      }
+    }
+
+    // ── Candles ──────────────────────────────────
+    function placeCandles() {
+      const container = document.getElementById('candles');
+      container.innerHTML = '';
+
+      const positions = [
+        { left: '15%', bottom: '15%', h: 28 },
+        { left: '20%', bottom: '18%', h: 35 },
+        { left: '25%', bottom: '13%', h: 24 },
+        { right: '15%', bottom: '15%', h: 30 },
+        { right: '20%', bottom: '18%', h: 33 },
+        { right: '25%', bottom: '13%', h: 26 },
+        { left: '35%', bottom: '10%', h: 22 },
+        { right: '35%', bottom: '10%', h: 25 },
+      ];
+
+      positions.forEach((pos, i) => {
+        const candle = document.createElement('div');
+        candle.className = 'candle';
+        if (pos.left) candle.style.left = pos.left;
+        if (pos.right) candle.style.right = pos.right;
+        candle.style.bottom = pos.bottom;
+
+        const cdur = (1.8 + Math.random() * 1.5).toFixed(1);
+
+        candle.innerHTML = `
+          <div class="candle-glow" style="--cdur:${cdur}s"></div>
+          <div class="candle-flame" style="--cdur:${cdur}s"></div>
+          <div class="candle-body" style="--h:${pos.h}px"></div>
+        `;
+        container.appendChild(candle);
+      });
+    }
+
+    // ── Ambient audio ────────────────────────────
+    let audioCtx = null;
+    let audioPlaying = false;
+    let droneNodes = [];
+
+    function createDrone() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Base drone at ~108 Hz
+      const freqs = [108, 162, 216, 54]; // 108 Hz, perfect fifth, octave, sub-octave
+      const gains = [0.06, 0.025, 0.015, 0.04];
+
+      freqs.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = i === 0 ? 'sine' : 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        // Slow LFO for gentle movement
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        lfo.frequency.setValueAtTime(0.05 + Math.random() * 0.1, audioCtx.currentTime);
+        lfoGain.gain.setValueAtTime(0.003, audioCtx.currentTime);
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        lfo.start();
+
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+
+        droneNodes.push({ osc, gain, lfo, targetGain: gains[i] });
+      });
+    }
+
+    function toggleAudio() {
+      const btn = document.getElementById('audioBtn');
+
+      if (!audioPlaying) {
+        createDrone();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        droneNodes.forEach(n => {
+          n.gain.gain.cancelScheduledValues(audioCtx.currentTime);
+          n.gain.gain.setValueAtTime(n.gain.gain.value, audioCtx.currentTime);
+          n.gain.gain.linearRampToValueAtTime(n.targetGain, audioCtx.currentTime + 4);
+        });
+
+        btn.classList.add('active');
+        audioPlaying = true;
+      } else {
+        droneNodes.forEach(n => {
+          n.gain.gain.cancelScheduledValues(audioCtx.currentTime);
+          n.gain.gain.setValueAtTime(n.gain.gain.value, audioCtx.currentTime);
+          n.gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3);
+        });
+
+        btn.classList.remove('active');
+        audioPlaying = false;
+      }
+    }
+
+    // ── Animation loop ───────────────────────────
+    let running = false;
+
+    function animate(time) {
+      if (!running) return;
+      drawStars(time);
+      requestAnimationFrame(animate);
+    }
+
+    // ── Entry ────────────────────────────────────
+    function enterTemple() {
+      const entry = document.getElementById('entry');
+      entry.classList.add('fade');
+      setTimeout(() => { entry.style.display = 'none'; }, 2500);
+
+      // Start animations
+      running = true;
+      requestAnimationFrame(animate);
+
+      // Show controls after a breath
+      setTimeout(() => {
+        document.getElementById('audioBtn').classList.add('visible');
+        document.getElementById('navHint').classList.add('visible');
+      }, 4000);
+
+      // Start mantra cycle
+      cycleMantra();
+      setInterval(cycleMantra, 30000);
+    }
+
+    // ── Init ─────────────────────────────────────
+    resizeCanvas();
+    createStars();
+    placeCandles();
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      createStars();
+    });
+
+    document.getElementById('entry').addEventListener('click', enterTemple);
+    document.getElementById('entry').addEventListener('touchstart', enterTemple, { once: true });
+    document.getElementById('audioBtn').addEventListener('click', toggleAudio);
+
+    // Keyboard: space to toggle audio, escape to exit
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (document.getElementById('entry').style.display !== 'none') {
+          enterTemple();
+        } else {
+          toggleAudio();
+        }
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
